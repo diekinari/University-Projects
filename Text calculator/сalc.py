@@ -265,7 +265,7 @@ def getPostfixTypedCommand(command):
                     postfixCommand.append(op)
                     stack.pop()
                 else:
-                    stack.remove(op)
+                    stack.pop()
                     break
         elif type(el) in [int, float]:
             postfixCommand.append(el)
@@ -326,10 +326,13 @@ def getTextedAnswer(answer, db):
     def translateIntoText(number):
         separatedDigits = transformIntoList(number)
         textedAnswer = ''
-        for el in separatedDigits:
-            if el != 0:
-                textedAnswer += " " + swappedDb[el]
-        return textedAnswer.strip()
+        if separatedDigits == [0,0,0]:
+            return 'ноль целых'
+        else:
+            for el in separatedDigits:
+                if el != 0:
+                    textedAnswer += " " + swappedDb[el]
+            return textedAnswer.strip()
 
     swappedDb = {v: k for k, v in db.items()}
     textedAnswer = ''
@@ -373,8 +376,11 @@ def main():
           "двести": 200, "триста": 300, "четыреста": 400, "пятьсот": 500, "шестьсот": 600, "семьсот": 700,
           "восемьсот": 800, "девятьсот": 900}
     command = getAndCheckTheCommand(db)
+    # print(command)
     postfixCommand = getPostfixTypedCommand(command)
+    # print(postfixCommand)
     answer = calculate(postfixCommand)
+    # print(answer)
     while abs(answer) >= 1000:
         clean()
         print('Получилось запредельное число - модуль больше тысячи. Попробуйте пример попроще')
