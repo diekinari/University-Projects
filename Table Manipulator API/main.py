@@ -1,30 +1,54 @@
-class Person():
-    startAge = 18
-    endAge = 60
+import csv
+import pickle
 
-    def __init__(self, name, surname, age=25):
-        self.name = name
-        self.surname = surname
-        self.age = age
-        self.isValidated = False
-        if Person.validate(age):
-            self.isValidated = True
 
-    def __str__(self):
-        return 'person name = ' + self.name
+# TODO
+# 1) Implement load/save table data with exceptions
 
-    def get_fio(self):
-        return self.name + ' ' + self.surname
 
-    @classmethod
-    def validate(cls, age):
-        return cls.startAge < age < cls.endAge
+class Table():
 
-    def display_info(self):
-        print(self)
-        print('validated - ' + str(self.isValidated))
+    def __init__(self):
+        self.type = None
+        self.data = []
 
-t = Person
-p1 = Person('danek', 'ivanov')
-p2 = Person('mark', 'nosatov', 16)
-p2.display_info()
+    def load_table(self, filePath):
+
+        def load_csv():
+            try:
+                with open(filePath, 'r') as file:
+                    csv_reader = csv.reader(file)
+                    self.data = [row for row in csv_reader]
+            except FileNotFoundError:
+                print('Файл не найден!')
+
+        def load_txt():
+            try:
+                with open(filePath, 'r') as file:
+                    csv_reader = csv.reader(file)
+                    self.data = [row for row in csv_reader]
+            except FileNotFoundError:
+                print('Файл не найден!')
+
+        try:
+            assert filePath[-3:] in ['csv', 'txt', 'pkl'], 'Неподходящий формат файла!'
+            if filePath[-3:] == 'csv':
+                self.type = 'csv'
+                load_csv()
+            elif filePath[-3:] == 'txt':
+                self.type = 'txt'
+                print("it's txt-type file")
+            elif filePath[-3:] == 'pkl':
+                print("it's pickle-type file")
+        except AssertionError as msg:
+            print(msg)
+
+
+tbl = Table()
+tbl.load_table('noski.csg')
+print(tbl.data)
+
+# with open('noski.csv', 'w') as file:
+#     csv_writer = csv.writer(file)
+#     csv_writer.writerow(['nosochek1', 'nosochek2', 'nosochek3'])
+#     csv_writer.writerow(['nosochek4', 'nosochek5', 'nosochek6'])
