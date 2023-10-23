@@ -38,21 +38,3 @@
 # answer = round(resultStack[0], 3)
 # print(answer)
 #
-import csv
-import pickle
-
-a = [[1, 2, 3],
-     [4, 5, 6],
-     [7, 8, 9]]
-
-
-with open('noski.txt', 'w') as file:
-    newRow = []
-    for row in a:
-        pass
-        # for i in range(1, len(row)-2):
-        #     newRow.append(str(row[i]) + ' ' + str(row[i+1]))
-    newRow.append('\n')
-    print(newRow)
-        # file.writelines([str(x) for x in row])
-

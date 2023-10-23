@@ -1,54 +1,34 @@
 import csv
 import pickle
+import tables
 
+# a = [
+#     [3, 2, 1],
+#     [6, 5, 4],
+#     [9, 8, 7]
+# ]
+# l = []
+# for row in a:
+#     print(row)
+#     l.append()
+# print(l)
 
-# TODO
-# 1) Implement load/save table data with exceptions
+# db = [['имя', 'уровень', 'бюджет'], ['данек', 2, 58830],['мрак', 48, 3994]]
 
+# with open('data.txt', 'w') as file:
+#     for row in db:
+#         newRow = ''
+#         for i in range(len(row)):
+#             if len(row)-1 > i > 0 :
+#                 newRow += ' ' + str(row[i]) + ' '
+#             elif i == 0:
+#                 newRow += str(row[i])
+#             else:
+#                 newRow += str(row[i]) + '\n'
+#         file.write(newRow)
 
-class Table():
+        # file.write(str([str(el).strip('[],') for el in str(row).split()]))
 
-    def __init__(self):
-        self.type = None
-        self.data = []
-
-    def load_table(self, filePath):
-
-        def load_csv():
-            try:
-                with open(filePath, 'r') as file:
-                    csv_reader = csv.reader(file)
-                    self.data = [row for row in csv_reader]
-            except FileNotFoundError:
-                print('Файл не найден!')
-
-        def load_txt():
-            try:
-                with open(filePath, 'r') as file:
-                    csv_reader = csv.reader(file)
-                    self.data = [row for row in csv_reader]
-            except FileNotFoundError:
-                print('Файл не найден!')
-
-        try:
-            assert filePath[-3:] in ['csv', 'txt', 'pkl'], 'Неподходящий формат файла!'
-            if filePath[-3:] == 'csv':
-                self.type = 'csv'
-                load_csv()
-            elif filePath[-3:] == 'txt':
-                self.type = 'txt'
-                print("it's txt-type file")
-            elif filePath[-3:] == 'pkl':
-                print("it's pickle-type file")
-        except AssertionError as msg:
-            print(msg)
-
-
-tbl = Table()
-tbl.load_table('noski.csg')
-print(tbl.data)
-
-# with open('noski.csv', 'w') as file:
-#     csv_writer = csv.writer(file)
-#     csv_writer.writerow(['nosochek1', 'nosochek2', 'nosochek3'])
-#     csv_writer.writerow(['nosochek4', 'nosochek5', 'nosochek6'])
+tbl = tables.Table()
+tbl.load_table('data.txt')
+tbl.print_table()
