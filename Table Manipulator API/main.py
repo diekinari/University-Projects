@@ -27,8 +27,9 @@ import tables
 #                 newRow += str(row[i]) + '\n'
 #         file.write(newRow)
 
-        # file.write(str([str(el).strip('[],') for el in str(row).split()]))
+# file.write(str([str(el).strip('[],') for el in str(row).split()]))
+
 
 tbl = tables.Table()
 tbl.load_table('data.txt')
-tbl.print_table()
+tbl.get_rows_by_number(3)

@@ -1,6 +1,6 @@
 import csv
 import pickle
- 
+
 
 class Table:
 
@@ -87,11 +87,23 @@ class Table:
             print(msg)
 
     def print_table(self):
-        for row in self.data:
+        for i in range(len(self.data)):
             newRow = ''
-            for i in range(len(row)):
-                if len(row) - 1 > i > 0:
-                    newRow += ' ' + str(row[i]) + ' '
+            for j in range(len(self.data[i])):
+                if j == 0:
+                    newRow += str(self.data[i][j])
                 else:
-                    newRow += str(row[i])
+                    prevColumn = [str(row[j-1]) for row in self.data]
+                    maxPrevColumnWord = max(prevColumn, key=len)
+                    prevWordInThisRow = str(self.data[i][j-1])
+                    newRow += (len(maxPrevColumnWord) - len(prevWordInThisRow) + 1) * ' ' + str(self.data[i][j])
             print(newRow)
+
+    def get_rows_by_number(self, start, stop=0, copy_table=False):
+        
+
+
+
+
+
+
