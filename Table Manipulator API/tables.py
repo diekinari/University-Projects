@@ -100,7 +100,7 @@ class Table:
             print(newRow)
 
     def get_rows_by_number(self, start, stop=0, copy_table=False):
-        
+        pass
 
 
 
