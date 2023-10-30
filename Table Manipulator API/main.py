@@ -32,4 +32,5 @@ import tables
 
 tbl = tables.Table()
 tbl.load_table('data.txt')
-tbl.get_rows_by_number(3)
+tbl.print_table()
+print(tbl.get_column_types())

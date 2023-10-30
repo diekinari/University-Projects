@@ -337,7 +337,7 @@ def getTextedAnswer(answer, db):
     swappedDb = {v: k for k, v in db.items()}
     textedAnswer = ''
     if str(answer)[0] == '-':
-        textedAnswer += 'минус'
+        textedAnswer += 'минус '
         answer = abs(answer)
 
     if type(answer) == int:

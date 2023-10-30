@@ -38,3 +38,5 @@
 # answer = round(resultStack[0], 3)
 # print(answer)
 #
+
+print(type('True'))

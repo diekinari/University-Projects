@@ -1,3 +1,4 @@
+import copy
 import csv
 import pickle
 
@@ -93,16 +94,47 @@ class Table:
                 if j == 0:
                     newRow += str(self.data[i][j])
                 else:
-                    prevColumn = [str(row[j-1]) for row in self.data]
+                    prevColumn = [str(row[j - 1]) for row in self.data]
                     maxPrevColumnWord = max(prevColumn, key=len)
-                    prevWordInThisRow = str(self.data[i][j-1])
+                    prevWordInThisRow = str(self.data[i][j - 1])
                     newRow += (len(maxPrevColumnWord) - len(prevWordInThisRow) + 1) * ' ' + str(self.data[i][j])
             print(newRow)
 
-    def get_rows_by_number(self, start, stop=0, copy_table=False):
-        pass
+    def get_rows_by_number(self, start, stop=None, copy_table=False):
+        result = []
+        if not stop:
+            stop = start
+        for i in range(start - 1, stop):
+            try:
+                result.append(self.data[i])
+            except IndexError:
+                print('Строк(-и) с таким номером не существует !')
+        if copy_table:
+            return copy.deepcopy(result)
+        return result
 
+    def get_rows_by_index(self, *args, copy_table=False):
+        try:
+            mArgs = [str(arg) for arg in args]
+            firstColumn = [str(row[0]) for row in self.data]
 
+            assert all(el in firstColumn for el in mArgs), 'Некорректные аргументы!'
+            result = [row for row in self.data if str(row[0]) in mArgs]
+
+            if copy_table:
+                return copy.deepcopy(result)
+            return result
+        except AssertionError as msg:
+            print(msg)
+
+    def get_column_types(self, by_number=True):
+        result = {}
+        for i in range(len(self.data[0])):
+            if by_number:
+                result[i+1] = type(self.data[1][i])
+            else:
+                result[self.data[0][i]] = type(self.data[1][i])
+        return result
 
 
 
