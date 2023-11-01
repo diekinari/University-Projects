@@ -127,15 +127,73 @@ class Table:
         except AssertionError as msg:
             print(msg)
 
-    def get_column_types(self, by_number=True):
-        result = {}
-        for i in range(len(self.data[0])):
-            if by_number:
-                result[i+1] = type(self.data[1][i])
+    def get_columns_types(self, by_number=False):
+        def getColumnTypes(column):
+            result = []
+            for i in range(1, len(column)):
+                if column[i].isnumeric():
+                    element_type = 'int'
+                elif column[i] in ['True', 'False']:
+                    element_type = 'bool'
+                elif ''.join(column[i].split('.')).isnumeric():
+                    element_type = 'float'
+                else:
+                    element_type = 'str'
+
+                result.append(element_type)
+
+            return result
+
+        def areTypesAlike():
+            statementsList = []  # [areAllTheTypesInColumn0TheSame, ...]
+            for i in range(len(self.data[0])):
+                currentColumn = [self.data[x][i] for x in range(len(self.data[0]))]
+                types = getColumnTypes(currentColumn)
+                statementsList.append(all([types[x] == types[x + 1] for x in
+                                           range(len(types) - 1)]))  # check for every type in cur column is the same
+
+            return all(statementsList)
+
+        try:
+            assert areTypesAlike(), 'Типы данных в каком-то столбце не совпадают !'
+            result = {}
+            for i in range(len(self.data[0])):
+                currentColumn = [self.data[x][i] for x in range(len(self.data[0]))]
+                currentType = getColumnTypes(currentColumn)[0]
+                if by_number:
+                    result[i + 1] = currentType
+                else:
+                    result[self.data[0][i]] = currentType
+            return result
+        except AssertionError as msg:
+            print(msg)
+            return {}
+        # result = {}
+        # for i in range(len(self.data[0])):
+        #     if self.data[1][i].isnumeric():
+        #         element_type = 'int'
+        #     elif self.data[1][i] in ['True', 'False']:
+        #         element_type = 'bool'
+        #     elif ''.join(self.data[1][i].split('.')).isnumeric():
+        #         element_type = 'float'
+        #     else:
+        #         element_type = 'str'
+        #
+        #     if by_number:
+        #         result[i+1] = element_type
+        #     else:
+        #         result[self.data[0][i]] = element_type
+        # return result
+
+    def get_values(self, column=0):
+        try:
+            assert type(column) in [int, str], 'Неверный номер/название строки!'
+            if type(column) == int:
+                pass
             else:
-                result[self.data[0][i]] = type(self.data[1][i])
-        return result
-
-
-
+                pass
+        except AssertionError as msg:
+            print(msg)
+        except IndexError:
+            print('Неверный номер/название строки!')
 

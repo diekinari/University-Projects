@@ -6,31 +6,40 @@ import tables
 #     [3, 2, 1],
 #     [6, 5, 4],
 #     [9, 8, 7]
-# ]
-# l = []
-# for row in a:
-#     print(row)
-#     l.append()
-# print(l)
-
-# db = [['имя', 'уровень', 'бюджет'], ['данек', 2, 58830],['мрак', 48, 3994]]
-
-# with open('data.txt', 'w') as file:
-#     for row in db:
-#         newRow = ''
-#         for i in range(len(row)):
-#             if len(row)-1 > i > 0 :
-#                 newRow += ' ' + str(row[i]) + ' '
-#             elif i == 0:
-#                 newRow += str(row[i])
-#             else:
-#                 newRow += str(row[i]) + '\n'
-#         file.write(newRow)
-
-# file.write(str([str(el).strip('[],') for el in str(row).split()]))
 
 
 tbl = tables.Table()
 tbl.load_table('data.txt')
-tbl.print_table()
-print(tbl.get_column_types())
+# tbl.print_table()
+data = tbl.data
+print(tbl.get_columns_types(by_number=True))
+
+
+# def getColumnTypes(column):
+#     result = []
+#     for i in range(1, len(column)):
+#         if column[i].isnumeric():
+#             element_type = 'int'
+#         elif column[i] in ['True', 'False']:
+#             element_type = 'bool'
+#         elif ''.join(column[i].split('.')).isnumeric():
+#             element_type = 'float'
+#         else:
+#             element_type = 'str'
+#
+#         result.append(element_type)
+#
+#     return result
+#
+#
+# def areTypesAlike():
+#     statementsList = []  # [areAllTheTypesInColumn0TheSame, ...]
+#     for i in range(len(data[0])):
+#         currentColumn = [data[x][i] for x in range(len(data[0]))]
+#         types = getColumnTypes(currentColumn)
+#         statementsList.append(all([types[i] == types[i+1] for i in range(len(types) - 1)])) # check for every type in cur column is the same
+#
+#     return all(statementsList)
+#
+#
+# print(areTypesAlike())
