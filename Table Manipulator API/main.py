@@ -2,44 +2,94 @@ import csv
 import pickle
 import tables
 
-# a = [
-#     [3, 2, 1],
-#     [6, 5, 4],
-#     [9, 8, 7]
+# print('--------------------------------------- print_table unit test start ---------------------------------------')
+# tbl = tables.Table()
+# tbl.load_table('data.txt')
+# print('Исходные данные:')
+# print(tbl.data, '\n')
+# print('Итоговые данные:')
+# tbl.print_table()
+# print('--------------------------------------- print_table unit test over ---------------------------------------')
 
+# print('------------------------------------ get_rows_by_number unit test start -------------------------------------')
+# tbl = tables.Table()
+# tbl.load_table('data.txt')
+# print('Исходные данные:')
+# print(tbl.data, '\n')
+# print('Итоговые данные:')
+# print(tbl.get_rows_by_number(1, 2))
+# print('------------------------------------- get_rows_by_number unit test over -------------------------------------')
 
+# print('------------------------------------- get_rows_by_index unit test start -------------------------------------')
+# tbl = tables.Table()
+# tbl.load_table('data.txt')
+# print('Исходные данные:')
+# print(tbl.data, '\n')
+# print('Итоговые данные:')
+# print(tbl.get_rows_by_index("Франция", "Италия"))
+# print('------------------------------------- get_rows_by_index unit test over -------------------------------------')
+
+# print('------------------------------------- get_column_types unit test start -------------------------------------')
+# tbl = tables.Table()
+# tbl.load_table('data.txt')
+# print('Исходные данные:')
+# print(tbl.data, '\n')
+# print('Итоговые данные:')
+# print(tbl.get_columns_types())
+# print('-------------------------------------- get_column_types unit test over --------------------------------------')
+
+print('------------------------------------- set_column_types unit test start -------------------------------------')
 tbl = tables.Table()
 tbl.load_table('data.txt')
+print('Исходные данные:')
+tbl.print_table()
+print('\n', end='')
+print('Исходные типы столбцов:')
+print(tbl.get_columns_types(), '\n')
+print(tbl.get_columns_types(by_number=True), '\n')
+tbl.set_column_types({"Бюджет": int, "Страна": str})
+print('Итоговые типы столбцов:')
+print(tbl.get_columns_types())
+print('-------------------------------------- set_column_types unit test over --------------------------------------')
+
+# print('--------------------------------------- get_values unit test start ---------------------------------------')
+# tbl = tables.Table()
+# tbl.load_table('data.txt')
+# print('Исходные данные:')
+# print(tbl.data, '\n')
+# print('Итоговые данные:')
+# print(tbl.get_values(3))
+# print('--------------------------------------- get_values unit test over ---------------------------------------')
+
+# print('--------------------------------------- get_value unit test start ---------------------------------------')
+# tbl = tables.Table()
+# tbl.load_table('data1.txt')
+# print('Исходные данные:')
+# print(tbl.data, '\n')
+# print('Итоговые данные:')
+# print(tbl.get_value(3))
+# print('--------------------------------------- get_value unit test over ---------------------------------------')
+
+# print('--------------------------------------- set_values unit test start ---------------------------------------')
+# tbl = tables.Table()
+# tbl.load_table('data.txt')
+# print('Исходные данные:')
 # tbl.print_table()
-data = tbl.data
-print(tbl.get_columns_types(by_number=True))
+# print('\n')
+# tbl.set_values("Африка", "Америка", column="Континент")
+# tbl.set_values(1234, 321, column=2)
+# print('Итоговые данные:')
+# tbl.print_table()
+# print('--------------------------------------- set_values unit test over ---------------------------------------')
 
-
-# def getColumnTypes(column):
-#     result = []
-#     for i in range(1, len(column)):
-#         if column[i].isnumeric():
-#             element_type = 'int'
-#         elif column[i] in ['True', 'False']:
-#             element_type = 'bool'
-#         elif ''.join(column[i].split('.')).isnumeric():
-#             element_type = 'float'
-#         else:
-#             element_type = 'str'
-#
-#         result.append(element_type)
-#
-#     return result
-#
-#
-# def areTypesAlike():
-#     statementsList = []  # [areAllTheTypesInColumn0TheSame, ...]
-#     for i in range(len(data[0])):
-#         currentColumn = [data[x][i] for x in range(len(data[0]))]
-#         types = getColumnTypes(currentColumn)
-#         statementsList.append(all([types[i] == types[i+1] for i in range(len(types) - 1)])) # check for every type in cur column is the same
-#
-#     return all(statementsList)
-#
-#
-# print(areTypesAlike())
+# print('--------------------------------------- set_value unit test start ---------------------------------------')
+# tbl = tables.Table()
+# tbl.load_table('data1.txt')
+# print('Исходные данные:')
+# tbl.print_table()
+# print('\n', end='')
+# tbl.set_value(1520, column=2)
+# tbl.set_value('Германия')
+# print('Итоговые данные:')
+# tbl.print_table()
+# print('--------------------------------------- set_value unit test over ---------------------------------------')

@@ -3,6 +3,34 @@ import csv
 import pickle
 
 
+def getColumnTypes(column):
+    result = []
+    for i in range(1, len(column)):
+        if column[i].isnumeric():
+            element_type = 'int'
+        elif column[i] in ['True', 'False']:
+            element_type = 'bool'
+        elif ''.join(column[i].split('.')).isnumeric():
+            element_type = 'float'
+        else:
+            element_type = 'str'
+
+        result.append(element_type)
+
+    return result
+
+
+def areTypesInAllColumnsAlike(data):
+    statementsList = []  # [areAllTheTypesInColumn0TheSame, ...]
+    for i in range(len(data[0])):
+        currentColumn = [data[x][i] for x in range(len(data))]
+        types = getColumnTypes(currentColumn)
+        statementsList.append(all([types[x] == types[x + 1] for x in
+                                   range(len(types) - 1)]))  # check for every type in cur column is the same
+
+    return all(statementsList)
+
+
 class Table:
 
     def __init__(self):
@@ -128,37 +156,11 @@ class Table:
             print(msg)
 
     def get_columns_types(self, by_number=False):
-        def getColumnTypes(column):
-            result = []
-            for i in range(1, len(column)):
-                if column[i].isnumeric():
-                    element_type = 'int'
-                elif column[i] in ['True', 'False']:
-                    element_type = 'bool'
-                elif ''.join(column[i].split('.')).isnumeric():
-                    element_type = 'float'
-                else:
-                    element_type = 'str'
-
-                result.append(element_type)
-
-            return result
-
-        def areTypesAlike():
-            statementsList = []  # [areAllTheTypesInColumn0TheSame, ...]
-            for i in range(len(self.data[0])):
-                currentColumn = [self.data[x][i] for x in range(len(self.data[0]))]
-                types = getColumnTypes(currentColumn)
-                statementsList.append(all([types[x] == types[x + 1] for x in
-                                           range(len(types) - 1)]))  # check for every type in cur column is the same
-
-            return all(statementsList)
-
         try:
-            assert areTypesAlike(), 'Типы данных в каком-то столбце не совпадают !'
+            assert areTypesInAllColumnsAlike(self.data), 'Типы данных в каком-то столбце не совпадают !'
             result = {}
-            for i in range(len(self.data[0])):
-                currentColumn = [self.data[x][i] for x in range(len(self.data[0]))]
+            for i in range(len(self.data[0])):  # going through columns' names
+                currentColumn = [self.data[x][i] for x in range(len(self.data))]
                 currentType = getColumnTypes(currentColumn)[0]
                 if by_number:
                     result[i + 1] = currentType
@@ -168,32 +170,151 @@ class Table:
         except AssertionError as msg:
             print(msg)
             return {}
-        # result = {}
-        # for i in range(len(self.data[0])):
-        #     if self.data[1][i].isnumeric():
-        #         element_type = 'int'
-        #     elif self.data[1][i] in ['True', 'False']:
-        #         element_type = 'bool'
-        #     elif ''.join(self.data[1][i].split('.')).isnumeric():
-        #         element_type = 'float'
-        #     else:
-        #         element_type = 'str'
-        #
-        #     if by_number:
-        #         result[i+1] = element_type
-        #     else:
-        #         result[self.data[0][i]] = element_type
-        # return result
 
-    def get_values(self, column=0):
+    # TODO
+    # get воспринимает все столбцы как строки и выводит "подрзаумеваемый" тип
+    # 1) Переделать get под прямой вывод типов
+    # 2) Додлать set по аналогии
+    def set_column_types(self, types_dict, by_number=False):
         try:
-            assert type(column) in [int, str], 'Неверный номер/название строки!'
-            if type(column) == int:
-                pass
+            if by_number:
+                assert type(list({x for x in types_dict.keys()})[
+                                0]) == int, 'При таком аргументе by_number ключи должны быть цифрами!'
             else:
-                pass
+                assert type(list({x for x in types_dict.keys()})[
+                                0]) == str, 'При таком аргументе by_number ключи должны быть словами!'
+            result = {}
+            for key in types_dict.keys():  # going through columns' names
+                if by_number:
+                    currentColumn = [self.data[x][key - 1] for x in range(len(self.data))]
+                else:
+                    currentColumn = [self.data[x][self.data[0].index(key)] for x in range(len(self.data))]
+                for el in currentColumn[1:]:
+                    pass
+                    # el = types_dict[key](el)
+                print(currentColumn)
+
+
         except AssertionError as msg:
             print(msg)
         except IndexError:
-            print('Неверный номер/название строки!')
+            print('Неккоректный номер столбца!')
+        except ValueError:
+            print("Неккоректное название столбца!")
 
+    def get_values(self, column=1):
+        try:
+            assert type(column) in [int, str], 'Неккоректный тип аргумента!'
+            modifiedColumn = []
+            if type(column) == int:
+                if column < 1:
+                    raise IndexError()
+                sourceColumn = [row[column - 1] for row in self.data]
+            else:
+                sourceColumn = [row[self.data[0].index(column)] for row in self.data]
+            sourceColumnTypes = getColumnTypes(sourceColumn)
+            if len(set(sourceColumnTypes)) == 1:
+                if sourceColumnTypes[0] == 'str':
+                    modifiedColumn = sourceColumn[1:]
+                elif sourceColumnTypes[0] == 'int':
+                    modifiedColumn = [int(el) for el in sourceColumn[1:]]
+                elif sourceColumnTypes[0] == 'float':
+                    modifiedColumn = [float(el) for el in sourceColumn[1:]]
+                elif sourceColumnTypes[0] == 'bool':
+                    modifiedColumn = [bool(el) for el in sourceColumn[1:]]
+            else:
+                print('В строке содержатся элементы разных типов! Все элементы будут приведены к строке.')
+                modifiedColumn = sourceColumn[1:]
+            return modifiedColumn
+
+        except AssertionError as msg:
+            print(msg)
+        except IndexError:
+            print('Неккоректный индекс!')
+        except ValueError:
+            print('Неккоректное название столбца!')
+
+    def get_value(self, column=1):
+        try:
+            assert len(self.data) == 1, 'Данный метод не подходит для заданной таблицы!'
+            if column < 1:
+                raise IndexError
+            sourceElement = self.data[0][column - 1]
+            if sourceElement.isnumeric():
+                sourceElement = int(sourceElement)
+            elif sourceElement in ['True', 'False']:
+                sourceElement = bool(sourceElement)
+            elif ''.join(sourceElement.split('.')).isnumeric():
+                sourceElement = float(sourceElement)
+            return sourceElement
+
+        except AssertionError as msg:
+            print(msg)
+        except IndexError:
+            print('Неккоректный номер столбца!')
+
+    def set_values(self, *values, column=1):
+        try:
+            assert type(column) in [int, str], 'Неккоректный тип аргумента!'
+            if type(column) == int:
+                if column < 1:
+                    raise IndexError()
+                sourceColumn = [row[column - 1] for row in self.data]
+                index = column - 1
+            else:
+                sourceColumn = [row[self.data[0].index(column)] for row in self.data]
+                index = self.data[0].index(column)
+            if len(sourceColumn) - 1 != len(values):
+                raise ArithmeticError
+            sourceColumnTypes = getColumnTypes(sourceColumn)
+
+            def change_values_with_type(columnType):
+                for i in range(1, len(self.data)):
+                    row = self.data[i]
+                    if columnType == 'bool':
+                        newValue = bool(values[i - 1])
+                    elif columnType == 'int':
+                        newValue = int(values[i - 1])
+                    elif columnType == 'float':
+                        newValue = float(values[i - 1])
+                    else:
+                        newValue = str(values[i - 1])
+                    row[index] = newValue
+
+            if len(set(sourceColumnTypes)) != 1:
+                print('В строке содержатся элементы разных типов! Все элементы будут приведены к строке.')
+                change_values_with_type('str')
+            else:
+                change_values_with_type(sourceColumnTypes[0])
+
+        except AssertionError as msg:
+            print(msg)
+        except IndexError:
+            print('Неккоректный индекс!')
+        except ValueError:
+            print('Неккоректное название столбца!')
+        except ArithmeticError:
+            print('Количество значений аргументов не совпадает с количеством элементов в столбце!')
+
+    def set_value(self, value, column=1):
+        try:
+            assert len(self.data) == 1, 'Данный метод не подходит для заданной таблицы!'
+            if column < 1:
+                raise IndexError
+            mainRow = self.data[0]
+            sourceElement = mainRow[column - 1]
+            if sourceElement.isnumeric():
+                mainRow[column - 1] = int(value)
+            elif sourceElement in ['True', 'False']:
+                mainRow[column - 1] = bool(value)
+            elif ''.join(sourceElement.split('.')).isnumeric():
+                mainRow[column - 1] = float(value)
+            else:
+                mainRow[column - 1] = str(value)
+
+
+
+        except AssertionError as msg:
+            print(msg)
+        except IndexError:
+            print('Неккоректный номер столбца!')
