@@ -6,16 +6,7 @@ import pickle
 def getColumnTypes(column):
     result = []
     for i in range(1, len(column)):
-        if column[i].isnumeric():
-            element_type = 'int'
-        elif column[i] in ['True', 'False']:
-            element_type = 'bool'
-        elif ''.join(column[i].split('.')).isnumeric():
-            element_type = 'float'
-        else:
-            element_type = 'str'
-
-        result.append(element_type)
+        result.append(type(column[i]))
 
     return result
 
@@ -26,9 +17,22 @@ def areTypesInAllColumnsAlike(data):
         currentColumn = [data[x][i] for x in range(len(data))]
         types = getColumnTypes(currentColumn)
         statementsList.append(all([types[x] == types[x + 1] for x in
-                                   range(len(types) - 1)]))  # check for every type in cur column is the same
+                                   range(len(types) - 1)]))  # check if every type in cur column is the same
 
     return all(statementsList)
+
+
+def setUpRightTypes(table):
+    for i in range(len(table[0])):
+        for j in range(1, len(table)):
+            if '.' in table[j][i] and ''.join(table[j][i].split('.')).isnumeric():
+                table[j][i] = float(table[j][i])
+            elif table[j][i].isnumeric():
+                table[j][i] = int(table[j][i])
+            elif table[j][i] in ['True', 'False']:
+                table[j][i] = bool(table[j][i])
+            else:
+                table[j][i] = str(table[j][i])
 
 
 class Table:
@@ -37,6 +41,7 @@ class Table:
         self.type = None
         self.data = []
         self.name = ''
+        self.types = {}
 
     def load_table(self, filePath):
 
@@ -74,6 +79,8 @@ class Table:
             elif filePath[-3:] == 'pkl':
                 self.type = 'pkl'
                 load_pkl()
+            setUpRightTypes(self.data)
+            self.types = {key: 'type is not set' for key in self.data[0]}
         except AssertionError as msg:
             print(msg)
 
@@ -156,44 +163,59 @@ class Table:
             print(msg)
 
     def get_columns_types(self, by_number=False):
-        try:
-            assert areTypesInAllColumnsAlike(self.data), 'Типы данных в каком-то столбце не совпадают !'
+        # try:
+        #     assert areTypesInAllColumnsAlike(self.data), 'Типы данных в каком-то столбце не совпадают !'
+        #     result = {}
+        #     for i in range(len(self.data[0])):  # going through columns' names
+        #         currentColumn = [self.data[x][i] for x in range(len(self.data))]
+        #         currentType = getColumnTypes(currentColumn)[0]
+        #         if by_number:
+        #             result[i + 1] = currentType
+        #         else:
+        #             result[self.data[0][i]] = currentType
+        #     return result
+        # except AssertionError as msg:
+        #     print(msg)
+        #     return {}
+        if by_number:
+            i = 1
             result = {}
-            for i in range(len(self.data[0])):  # going through columns' names
-                currentColumn = [self.data[x][i] for x in range(len(self.data))]
-                currentType = getColumnTypes(currentColumn)[0]
-                if by_number:
-                    result[i + 1] = currentType
-                else:
-                    result[self.data[0][i]] = currentType
+            for name in self.data[0]:
+                result[i] = self.types[name]
+                i += 1
             return result
-        except AssertionError as msg:
-            print(msg)
-            return {}
+        else:
+            return self.types
 
-    # TODO
-    # get воспринимает все столбцы как строки и выводит "подрзаумеваемый" тип
-    # 1) Переделать get под прямой вывод типов
-    # 2) Додлать set по аналогии
     def set_column_types(self, types_dict, by_number=False):
         try:
             if by_number:
                 assert type(list({x for x in types_dict.keys()})[
                                 0]) == int, 'При таком аргументе by_number ключи должны быть цифрами!'
+                titles = [self.data[0][i - 1] for i in types_dict.keys()]
+                for i in types_dict.keys():
+                    self.types[self.data[0][i - 1]] = types_dict[i]
+
             else:
                 assert type(list({x for x in types_dict.keys()})[
                                 0]) == str, 'При таком аргументе by_number ключи должны быть словами!'
-            result = {}
-            for key in types_dict.keys():  # going through columns' names
-                if by_number:
-                    currentColumn = [self.data[x][key - 1] for x in range(len(self.data))]
-                else:
-                    currentColumn = [self.data[x][self.data[0].index(key)] for x in range(len(self.data))]
-                for el in currentColumn[1:]:
-                    pass
-                    # el = types_dict[key](el)
-                print(currentColumn)
+                titles = [x for x in types_dict.keys()]
+                if not all(x in self.data[0] for x in titles):
+                    raise ValueError
+                for el in titles:
+                    self.types[el] = types_dict[el]
 
+            # for key in types_dict.keys():  # going through columns' names
+            # if by_number:
+            #     currentColumn = [self.data[x][key - 1] for x in range(len(self.data))]
+            # else:
+            #     currentColumn = [self.data[x][self.data[0].index(key)] for x in range(len(self.data))]
+            # print(currentColumn)
+            # for el in currentColumn[1:]:
+            #     el = int(el)
+            #     # el = int(el)
+            #     # el = types_dict[key](el)
+            # print(currentColumn)
 
         except AssertionError as msg:
             print(msg)
@@ -311,7 +333,6 @@ class Table:
                 mainRow[column - 1] = float(value)
             else:
                 mainRow[column - 1] = str(value)
-
 
 
         except AssertionError as msg:
