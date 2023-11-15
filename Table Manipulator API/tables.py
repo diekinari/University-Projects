@@ -1,5 +1,6 @@
 import copy
 import csv
+import datetime
 import pickle
 
 
@@ -27,12 +28,35 @@ def setUpRightTypes(table):
         for j in range(1, len(table)):
             if '.' in table[j][i] and ''.join(table[j][i].split('.')).isnumeric():
                 table[j][i] = float(table[j][i])
+
             elif table[j][i].isnumeric():
                 table[j][i] = int(table[j][i])
+
             elif table[j][i] in ['True', 'False']:
                 table[j][i] = bool(table[j][i])
+
+            elif len(table[j][i].split(':')) == 3 and all([x.isnumeric() for x in table[j][i].split(':')]):
+                hours, minutes, seconds = map(int, table[j][i].split(':'))
+                table[j][i] = datetime.time(hours, minutes, seconds)
+
+            elif len(table[j][i].split('-')) == 3 and all([x.isnumeric() for x in table[j][i].split('-')]):
+                year, month, day = map(int, table[j][i].split('-'))
+                table[j][i] = datetime.date(year, month, day)
+
             else:
                 table[j][i] = str(table[j][i])
+
+
+def concat(table1, table2):
+    try:
+        assert len(table1.data) == len(table2.data), 'Количество строк в таблицах не эквивалентно!'
+        assert all([len(x) == len(table1.data[0]) for x in table1.data]) and all(
+            [len(x) == len(table2.data[0]) for x in table2.data]), \
+            'Количество стоблцов в какой-то из таблиц неккоректно!'
+        for i in range(len(table1.data)):
+            table1.data[i] += table2.data[i]
+    except AssertionError as msg:
+        print(msg)
 
 
 class Table:
@@ -43,7 +67,7 @@ class Table:
         self.name = ''
         self.types = {}
 
-    def load_table(self, filePath):
+    def load_table(self, filePath, autoSetUp=False):
 
         def load_csv():
             try:
@@ -79,8 +103,22 @@ class Table:
             elif filePath[-3:] == 'pkl':
                 self.type = 'pkl'
                 load_pkl()
-            setUpRightTypes(self.data)
-            self.types = {key: 'type is not set' for key in self.data[0]}
+            if autoSetUp:
+                setUpRightTypes(self.data)
+
+                try:
+                    assert areTypesInAllColumnsAlike(self.data), 'Типы данных в каком-то столбце не совпадают !'
+                    result = {}
+                    for i in range(len(self.data[0])):  # going through columns' names
+                        currentColumn = [self.data[x][i] for x in range(len(self.data))]
+                        currentType = getColumnTypes(currentColumn)[0]
+                        result[self.data[0][i]] = currentType
+                    self.types = result
+                except AssertionError as msg:
+                    print(msg)
+
+            else:
+                self.types = {key: 'type is not set' for key in self.data[0]}
         except AssertionError as msg:
             print(msg)
 
@@ -163,20 +201,6 @@ class Table:
             print(msg)
 
     def get_columns_types(self, by_number=False):
-        # try:
-        #     assert areTypesInAllColumnsAlike(self.data), 'Типы данных в каком-то столбце не совпадают !'
-        #     result = {}
-        #     for i in range(len(self.data[0])):  # going through columns' names
-        #         currentColumn = [self.data[x][i] for x in range(len(self.data))]
-        #         currentType = getColumnTypes(currentColumn)[0]
-        #         if by_number:
-        #             result[i + 1] = currentType
-        #         else:
-        #             result[self.data[0][i]] = currentType
-        #     return result
-        # except AssertionError as msg:
-        #     print(msg)
-        #     return {}
         if by_number:
             i = 1
             result = {}

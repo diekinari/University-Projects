@@ -1,4 +1,5 @@
 import csv
+import datetime
 import pickle
 import tables
 
@@ -30,7 +31,7 @@ import tables
 # print('------------------------------------- get_rows_by_index unit test over -------------------------------------')
 
 
-# print('------------------------------------- set&get_column_types unit test start -------------------------------------')
+# print('----------------------------------- set&get_column_types unit test start -----------------------------------')
 # tbl = tables.Table()
 # tbl.load_table('data.txt')
 # print('Исходные типы столбцов:')
@@ -44,7 +45,7 @@ import tables
 # print('Итоговые типы столбцов:')
 # print(tbl.get_columns_types())
 # print(tbl.get_columns_types(True))
-# print('-------------------------------------- set&get_column_types unit test over --------------------------------------')
+# print('----------------------------------- set&get_column_types unit test over ------------------------------------')
 
 # print('--------------------------------------- get_values unit test start ---------------------------------------')
 # tbl = tables.Table()
@@ -87,3 +88,42 @@ import tables
 # print('Итоговые данные:')
 # tbl.print_table()
 # print('--------------------------------------- set_value unit test over ---------------------------------------')
+
+# print('--------------------------------------- get_values unit test start ---------------------------------------')
+# tbl = tables.Table()
+# tbl.load_table('data.txt')
+# print('Исходные данные:')
+# print(tbl.data, '\n')
+# print('Итоговые данные:')
+# print(tbl.get_values(3))
+# print('--------------------------------------- get_values unit test over ---------------------------------------')
+
+#              -------------------------------------------EXTRAS-----------------------------------------------
+# print('--------------------------------- 4) load_table(autoSetUp) unit test start ----------------------------------')
+# tbl = tables.Table()
+# tbl.load_table('data.txt')
+# print('Без дополнений:')
+# print(tbl.get_columns_types(), '\n')
+# tbl2 = tables.Table()
+# tbl2.load_table('data.txt', True)
+# print('С дополнениями:')
+# print(tbl2.get_columns_types())
+# print('---------------------------------- 4) load_table(autoSetUp) unit test over ----------------------------------')
+
+# print('--------------------------------- 5) datetime unit test start ----------------------------------')
+# tbl = tables.Table()
+# tbl.load_table('data2.txt', True)
+# print('Типы данных')
+# print(tbl.get_columns_types(), '\n')
+# tbl.print_table()
+# print('---------------------------------- 5) datetime unit test over ----------------------------------')
+
+print('--------------------------------- 3) concat & split unit test start ----------------------------------')
+tbl1 = tables.Table()
+tbl1.load_table('firstHalfData.txt')
+tbl2 = tables.Table()
+tbl2.load_table('secondHalfData.txt')
+tables.concat(tbl1, tbl2)
+tbl1.print_table()
+#ADD SPLIT COMMAND => 5 MARKS
+print('---------------------------------- 3) concat & split unit test over ----------------------------------')
