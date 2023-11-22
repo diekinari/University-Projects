@@ -67,13 +67,16 @@ class Table:
         self.name = ''
         self.types = {}
 
-    def load_table(self, filePath, autoSetUp=False):
-
+    def load_table(self, *args, autoSetUp=False):
+        # Add assert in longMode for check the correct data + replace all the test .txt files to csv
         def load_csv():
             try:
                 with open(filePath, 'r') as file:
                     csv_reader = csv.reader(file)
-                    self.data = [row for row in csv_reader]
+                    if longMode:
+                        self.data += [row for row in csv_reader]
+                    else:
+                        self.data = [row for row in csv_reader]
             except FileNotFoundError:
                 print('Файл не найден!')
 
@@ -87,38 +90,47 @@ class Table:
         def load_pkl():
             try:
                 with open(filePath, 'rb') as file:
-                    self.data = pickle.load(file)
+                    if longMode:
+                        self.data += pickle.load(file)
+                    else:
+                        self.data = pickle.load(file)
             except FileNotFoundError:
                 print('Файл не найден!')
 
         try:
-            assert filePath[-3:] in ['csv', 'txt', 'pkl'], 'Неподходящий формат файла!'
-            self.name = filePath[:-4]
-            if filePath[-3:] == 'csv':
-                self.type = 'csv'
-                load_csv()
-            elif filePath[-3:] == 'txt':
-                self.type = 'txt'
-                load_txt()
-            elif filePath[-3:] == 'pkl':
-                self.type = 'pkl'
-                load_pkl()
-            if autoSetUp:
-                setUpRightTypes(self.data)
-
-                try:
-                    assert areTypesInAllColumnsAlike(self.data), 'Типы данных в каком-то столбце не совпадают !'
-                    result = {}
-                    for i in range(len(self.data[0])):  # going through columns' names
-                        currentColumn = [self.data[x][i] for x in range(len(self.data))]
-                        currentType = getColumnTypes(currentColumn)[0]
-                        result[self.data[0][i]] = currentType
-                    self.types = result
-                except AssertionError as msg:
-                    print(msg)
-
+            if len(args) == 1:
+                longMode = True
             else:
-                self.types = {key: 'type is not set' for key in self.data[0]}
+                longMode = False
+
+            for filePath in args:
+                assert filePath[-3:] in ['csv', 'txt', 'pkl'], 'Неподходящий формат файла!'
+                self.name = filePath[:-4]
+                if filePath[-3:] == 'csv':
+                    self.type = 'csv'
+                    load_csv()
+                elif filePath[-3:] == 'txt':
+                    self.type = 'txt'
+                    load_txt()
+                elif filePath[-3:] == 'pkl':
+                    self.type = 'pkl'
+                    load_pkl()
+                if autoSetUp:
+                    setUpRightTypes(self.data)
+
+                    try:
+                        assert areTypesInAllColumnsAlike(self.data), 'Типы данных в каком-то столбце не совпадают !'
+                        result = {}
+                        for i in range(len(self.data[0])):  # going through columns' names
+                            currentColumn = [self.data[x][i] for x in range(len(self.data))]
+                            currentType = getColumnTypes(currentColumn)[0]
+                            result[self.data[0][i]] = currentType
+                        self.types = result
+                    except AssertionError as msg:
+                        print(msg)
+
+                else:
+                    self.types = {key: 'type is not set' for key in self.data[0]}
         except AssertionError as msg:
             print(msg)
 
@@ -363,3 +375,9 @@ class Table:
             print(msg)
         except IndexError:
             print('Неккоректный номер столбца!')
+
+    def splitTable(self, rowNumber):
+        try:
+            return self.data[:rowNumber - 1], self.data[rowNumber - 1:]
+        except AssertionError as msg:
+            print(msg)
