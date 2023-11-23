@@ -66,81 +66,101 @@ class Table:
         self.data = []
         self.name = ''
         self.types = {}
+        self.columnsCount = 0
 
     def load_table(self, *args, autoSetUp=False):
         # Add assert in longMode for check the correct data + replace all the test .txt files to csv
-        def load_csv():
+        def load_csv(filePath):
             try:
                 with open(filePath, 'r') as file:
                     csv_reader = csv.reader(file)
                     if longMode:
-                        self.data += [row for row in csv_reader]
+                        newData = [row for row in csv_reader]
+                        assert all(len(row) == self.columnsCount for row in newData), 'Структура столбцов не совпадает!'
+                        self.data += newData
                     else:
                         self.data = [row for row in csv_reader]
+                        self.columnsCount = len(self.data[0])
             except FileNotFoundError:
                 print('Файл не найден!')
 
-        def load_txt():
+        def load_txt(filePath):
             try:
                 with open(filePath, 'r') as file:
                     self.data = [row.split() for row in file.readlines()]
             except FileNotFoundError:
-                print('Файл не найден!')
+                print('Файл неz найден!')
 
-        def load_pkl():
+        def load_pkl(filePath):
             try:
                 with open(filePath, 'rb') as file:
                     if longMode:
-                        self.data += pickle.load(file)
+                        newData = pickle.load(file)
+                        assert all(len(row) == self.columnsCount for row in newData), 'Структура столбцов не совпадает!'
+                        self.data += newData
                     else:
                         self.data = pickle.load(file)
+                        self.columnsCount = len(self.data[0])
             except FileNotFoundError:
                 print('Файл не найден!')
 
+        def checkTypeAndLoad(filePath):
+            assert filePath[-3:] in ['csv', 'txt', 'pkl'], 'Неподходящий формат файла!'
+            self.name = filePath[:-4]
+            if filePath[-3:] == 'csv':
+                self.type = 'csv'
+                load_csv(filePath)
+            elif filePath[-3:] == 'txt':
+                self.type = 'txt'
+                load_txt(filePath)
+            elif filePath[-3:] == 'pkl':
+                self.type = 'pkl'
+                load_pkl(filePath)
+
         try:
-            if len(args) == 1:
+            longMode = False
+            checkTypeAndLoad(args[0])  # anyway load and process first file in the line
+
+            if len(args) > 1:
                 longMode = True
+                for extraPath in args[1:]:
+                    checkTypeAndLoad(extraPath)
+
+            if autoSetUp:
+                setUpRightTypes(self.data)
+
+                try:
+                    assert areTypesInAllColumnsAlike(self.data), 'Типы данных в каком-то столбце не совпадают !'
+                    result = {}
+                    for i in range(len(self.data[0])):  # going through columns' names
+                        currentColumn = [self.data[x][i] for x in range(len(self.data))]
+                        currentType = getColumnTypes(currentColumn)[0]
+                        result[self.data[0][i]] = currentType
+                    self.types = result
+                except AssertionError as msg:
+                    print(msg)
+
             else:
-                longMode = False
+                self.types = {key: 'type is not set' for key in self.data[0]}
 
-            for filePath in args:
-                assert filePath[-3:] in ['csv', 'txt', 'pkl'], 'Неподходящий формат файла!'
-                self.name = filePath[:-4]
-                if filePath[-3:] == 'csv':
-                    self.type = 'csv'
-                    load_csv()
-                elif filePath[-3:] == 'txt':
-                    self.type = 'txt'
-                    load_txt()
-                elif filePath[-3:] == 'pkl':
-                    self.type = 'pkl'
-                    load_pkl()
-                if autoSetUp:
-                    setUpRightTypes(self.data)
-
-                    try:
-                        assert areTypesInAllColumnsAlike(self.data), 'Типы данных в каком-то столбце не совпадают !'
-                        result = {}
-                        for i in range(len(self.data[0])):  # going through columns' names
-                            currentColumn = [self.data[x][i] for x in range(len(self.data))]
-                            currentType = getColumnTypes(currentColumn)[0]
-                            result[self.data[0][i]] = currentType
-                        self.types = result
-                    except AssertionError as msg:
-                        print(msg)
-
-                else:
-                    self.types = {key: 'type is not set' for key in self.data[0]}
         except AssertionError as msg:
             print(msg)
 
-    def save_table(self, name=''):
-        if name == '':
+    def save_table(self, name=None, max_rows=None):
+        if not name:
             name = self.name
 
         def save_csv():
-            with open(name + '.' + self.type, 'w') as file:
-                csv.writer(file).writerows(self.data)
+            try:
+                with open(name + '.' + self.type, 'w') as file:
+                    if max_rows:
+                        for i in range(max_rows - 1):
+                            pass
+                    else:
+                        csv.writer(file).writerows(self.data)
+            except IndexError:
+                print("Максимальное заданное количество рядов в новом больше, "
+                      "чем количество всех рядов в исходной таблице!")
 
         def save_txt():
             with open(name + '.' + self.type, 'w') as file:
@@ -160,14 +180,18 @@ class Table:
                 pickle.dump(self.data, file)
 
         try:
-            assert not (any(el in name for el in
-                            ['<', '>', ':', '"', '/', '\\', '|', '?', '*', ' ', '.'])), 'Неккоректное имя файла!'
-            if self.type == 'csv':
-                save_csv()
-            elif self.type == 'txt':
-                save_txt()
-            elif self.type == 'pkl':
-                save_pkl()
+            if max_rows:
+                filesCount = round(len(self.data) / max_rows)
+                # find out file count properly & implement saving to a various files like *name*_*index*.*type*
+            else:
+                assert not (any(el in name for el in
+                                ['<', '>', ':', '"', '/', '\\', '|', '?', '*', ' ', '.'])), 'Неккоректное имя файла!'
+                if self.type == 'csv':
+                    save_csv()
+                elif self.type == 'txt':
+                    save_txt()
+                elif self.type == 'pkl':
+                    save_pkl()
 
         except AssertionError as msg:
             print(msg)
@@ -272,13 +296,13 @@ class Table:
                 sourceColumn = [row[self.data[0].index(column)] for row in self.data]
             sourceColumnTypes = getColumnTypes(sourceColumn)
             if len(set(sourceColumnTypes)) == 1:
-                if sourceColumnTypes[0] == 'str':
+                if sourceColumnTypes[0] == str:
                     modifiedColumn = sourceColumn[1:]
-                elif sourceColumnTypes[0] == 'int':
+                elif sourceColumnTypes[0] == int:
                     modifiedColumn = [int(el) for el in sourceColumn[1:]]
-                elif sourceColumnTypes[0] == 'float':
+                elif sourceColumnTypes[0] == float:
                     modifiedColumn = [float(el) for el in sourceColumn[1:]]
-                elif sourceColumnTypes[0] == 'bool':
+                elif sourceColumnTypes[0] == bool:
                     modifiedColumn = [bool(el) for el in sourceColumn[1:]]
             else:
                 print('В строке содержатся элементы разных типов! Все элементы будут приведены к строке.')
