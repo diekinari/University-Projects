@@ -132,15 +132,27 @@ import tables
 # print(newT2)
 # print('---------------------------------- 3) concat & split unit test over ----------------------------------')
 
-print('--------------------------------- 1, 2) multy load/save unit test start ----------------------------------')
-testTable = tables.Table()
-testTable.load_table('part1.csv')
-testTable.print_table()
-print()
-tbl1 = tables.Table()
-tbl1.load_table('part1.csv', 'part2.csv', 'part3.csv')
-tbl1.print_table()
-print()
-# tbl1.save_table("savedPart1")
-
-print('---------------------------------- 1, 2) multy load/save unit test over ----------------------------------')
+# print('--------------------------------- 1, 2) multy load/save unit test start ----------------------------------')
+# # !delete multy_save files before testing!
+#
+# # CSV
+# tbl1 = tables.Table()
+# tbl1.load_table('savedPart1.csv')
+# tbl1.print_table()
+# print()
+# tbl1.save_table("Multy_Save", max_rows=2)
+# resultedTable = tables.Table()
+# resultedTable.load_table('Multy_Save_1.csv', 'Multy_Save_2.csv', 'Multy_Save_3.csv')
+# resultedTable.print_table()
+#
+# # PKL
+# # tbl2 = tables.Table()
+# # tbl2.load_table('savedPart1PKL.pkl')
+# # tbl2.print_table()
+# # print()
+# # # !delete multy_save files before testing!
+# # tbl2.save_table("Multy_SavePKL", max_rows=2)
+# # resultedTable = tables.Table()
+# # resultedTable.load_table('Multy_SavePKL_1.pkl', 'Multy_SavePKL_2.pkl', 'Multy_SavePKL_3.pkl')
+# # resultedTable.print_table()
+# print('---------------------------------- 1, 2) multy load/save unit test over ----------------------------------')

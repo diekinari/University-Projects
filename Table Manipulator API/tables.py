@@ -69,7 +69,6 @@ class Table:
         self.columnsCount = 0
 
     def load_table(self, *args, autoSetUp=False):
-        # Add assert in longMode for check the correct data + replace all the test .txt files to csv
         def load_csv(filePath):
             try:
                 with open(filePath, 'r') as file:
@@ -89,7 +88,7 @@ class Table:
                 with open(filePath, 'r') as file:
                     self.data = [row.split() for row in file.readlines()]
             except FileNotFoundError:
-                print('Файл неz найден!')
+                print('Файл не найден!')
 
         def load_pkl(filePath):
             try:
@@ -141,30 +140,37 @@ class Table:
                     print(msg)
 
             else:
-                self.types = {key: 'type is not set' for key in self.data[0]}
+                try:
+                    self.types = {key: 'type is not set' for key in self.data[0]}
+                except IndexError:
+                    print('Типы не могут быть установлены, так как файл не найден!')
 
         except AssertionError as msg:
             print(msg)
 
     def save_table(self, name=None, max_rows=None):
+        # implement saving to a various files like *name*_*index*.*type*
         if not name:
             name = self.name
 
         def save_csv():
             try:
-                with open(name + '.' + self.type, 'w') as file:
-                    if max_rows:
-                        for i in range(max_rows - 1):
-                            pass
-                    else:
+                if max_rows:
+                    for i in range(len(newData)):
+                        file = open(name + '_' + f'{i + 1}' + '.' + self.type, 'w')
+                        csv.writer(file).writerows(newData[i])
+                        file.close()
+                else:
+                    with open(name + '.' + self.type, 'w') as file:
                         csv.writer(file).writerows(self.data)
+
             except IndexError:
                 print("Максимальное заданное количество рядов в новом больше, "
                       "чем количество всех рядов в исходной таблице!")
 
         def save_txt():
-            with open(name + '.' + self.type, 'w') as file:
-                for row in self.data:
+            def writeFromSource(source):
+                for row in source:
                     newRow = ''
                     for i in range(len(row)):
                         if len(row) - 1 > i > 0:
@@ -175,23 +181,60 @@ class Table:
                             newRow += str(row[i]) + '\n'
                     file.write(newRow)
 
+            if max_rows:
+                for i in range(len(newData)):
+                    file = open(name + '_' + f'{i + 1}' + '.' + self.type, 'w')
+                    writeFromSource(newData[i])
+                    file.close()
+            else:
+                file = open(name + '.' + self.type, 'w')
+                writeFromSource(self.data)
+                file.close()
+
         def save_pkl():
-            with open(name + '.' + self.type, 'wb') as file:
-                pickle.dump(self.data, file)
+            try:
+                if max_rows:
+                    for i in range(len(newData)):
+                        file = open(name + '_' + f'{i + 1}' + '.pkl', 'wb')
+                        pickle.dump(newData[i], file)
+                        file.close()
+                else:
+                    with open(name + '.pkl', 'wb') as file:
+                        pickle.dump(self.data, file)
+
+            except IndexError:
+                print("Максимальное заданное количество рядов в новом больше, "
+                      "чем количество всех рядов в исходной таблице!")
 
         try:
             if max_rows:
-                filesCount = round(len(self.data) / max_rows)
-                # find out file count properly & implement saving to a various files like *name*_*index*.*type*
-            else:
-                assert not (any(el in name for el in
-                                ['<', '>', ':', '"', '/', '\\', '|', '?', '*', ' ', '.'])), 'Неккоректное имя файла!'
-                if self.type == 'csv':
-                    save_csv()
-                elif self.type == 'txt':
-                    save_txt()
-                elif self.type == 'pkl':
-                    save_pkl()
+                max_rows = int(max_rows)
+                # if len(self.data) // max_rows == len(self.data) // max_rows:
+                #     filesCount = (len(self.data) // max_rows)
+                # else:
+                #     filesCount = (len(self.data) // max_rows) + 1
+
+                newData = []
+                tempData = []
+
+                for r in self.data:
+                    tempData.append(r)
+
+                    if len(tempData) == max_rows:
+                        newData.append(tempData)
+                        tempData = []
+
+                if len(tempData) > 0:
+                    newData.append(tempData)
+
+            assert not (any(el in name for el in
+                            ['<', '>', ':', '"', '/', '\\', '|', '?', '*', ' ', '.'])), 'Неккоректное имя файла!'
+            if self.type == 'csv':
+                save_csv()
+            elif self.type == 'txt':
+                save_txt()
+            elif self.type == 'pkl':
+                save_pkl()
 
         except AssertionError as msg:
             print(msg)
