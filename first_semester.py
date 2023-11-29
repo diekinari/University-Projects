@@ -147,6 +147,7 @@ import enum
 # def transpose(matrix):
 #     return [[matrix[i][j] for i in range(len(matrix))] for j in range(len(matrix[0]))]
 #
+#
 # file1 = open("input.txt", "r+")
 # file2 = open("output.txt", "w")
 # currentMatrix = []
@@ -167,20 +168,21 @@ import enum
 #         file1.writelines([' '.join(transpose(currentMatrix)[i]) + '\n' for i in range(len(currentMatrix))])
 #         file1.write('\n')
 #
-#
 # file1.close()
 # file2.close()
 
 # task 22
 # a
 # def find_words(s):
-#     consonants =  'бвгджзйклмнпрстфхцчшщ'
-#     words =  re.findall('\w+', s)
+#     consonants = 'бвгджзйклмнпрстфхцчшщ'
+#     words = re.findall('\w+', s)
 #     res = []
 #     for word in words:
-#        if word[0].lower() in consonants:
-#            res.append(word)
+#         if word[0].lower() in consonants:
+#             res.append(word)
 #     return res
+#
+#
 # s = input("Введите предложение: ")
 # result = find_words(s)
 # print(result)
@@ -240,6 +242,7 @@ import enum
 #         c[num] += 1
 #     return c
 #
+#
 # print(main([1, 1, 23, 4, 3, 13, 23, 1, 5, 9, 3, 4, 0, 5, 9, 23, 5]))
 
 # c
@@ -255,6 +258,7 @@ import enum
 #         if field.name == sport:
 #             return field.value
 #
+#
 # print(getPlayersNumber('voleyball'))
 
 # d
@@ -263,6 +267,7 @@ import enum
 #     for st in strings:
 #         s.update(st.split())
 #     return frozenset(s)
+#
 #
 # strings = ['Hello World', 'Hello Universe', 'Goodbye World', 'GoodBye Universe']
 # print(unique(strings))

@@ -2,7 +2,7 @@ import csv
 import datetime
 import pickle
 import tables
-
+#
 # print('--------------------------------------- print_table unit test start ---------------------------------------')
 # tbl = tables.Table()
 # tbl.load_table('data.txt')
@@ -29,7 +29,7 @@ import tables
 # tbl.print_table()
 # print()
 # print('Итоговые данные:')
-# print(tbl.get_rows_by_index("Франция", "Италия"))
+# print(tbl.get_rows_by_index("Италия"))
 # print('------------------------------------- get_rows_by_index unit test over -------------------------------------')
 
 
@@ -54,7 +54,7 @@ import tables
 # tbl.print_table()
 # print()
 # print('Итоговые данные:')
-# print(tbl.get_values(2))
+# print(tbl.get_values(3))
 # print('--------------------------------------- get_values unit test over ---------------------------------------')
 
 # print('--------------------------------------- get_value unit test start ---------------------------------------')
