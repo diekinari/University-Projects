@@ -1,14 +1,25 @@
 import os
 
+# TODO
+# 1) Develop proper getting available positions thoughout every point (tech, spec & filter). Castling required.
+# 2) Next, implement highlighting available positions
+# 3) Develop moving process: actual changing the data in 'rows' & analazying every available attacking move.
+#    Go back to the start and provide highlighting all the threating figures with every new move.
+
+
 rows = {8: ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-        7: ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        7: ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
         6: ['.'] * 8, 5: ['.'] * 8, 4: ['.'] * 8, 3: ['.'] * 8,
         2: ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
         1: ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']}
+moves_history = {'r1': 0, 'n1': 0, 'b1': 0, 'q': 0, 'k': 0, 'b2': 0, 'n2': 0, 'r2': 0,
+                 'p1': 0, 'p2': 0, 'p3': 0, 'p4': 0, 'p5': 0, 'p6': 0, 'p7': 0, 'p8': 0,
+                 'P1': 0, 'P2': 0, 'P3': 0, 'P4': 0, 'P5': 0, 'P6': 0, 'P7': 0, 'P8': 0,
+                 'R1': 0, 'N1': 0, 'B1': 0, 'Q': 0, 'K': 0, 'B2': 0, 'N2': 0, 'R2': 0}
 turn = "white"
 
 
-def getCurrentTurn():
+def getCurrentTurn() -> str:
     if turn == 'white':
         return 'Белых'
     else:
@@ -30,15 +41,27 @@ def clean():
         os.system('clear')
 
 
-def printBoard(board):
+def printBoard():
     clean()
-    print('   A B C D E F G H  ')
-    for el in board:
-        print(el, '', *board[el], '', el)
-    print('   A B C D E F G H  ')
+    print('\033[40m' + '   ' + 'A B C D E F G H' +  '   ' + '\033[0m')
+    # for el in rows:
+    #     print(el, '', *rows[el], '', el)
+    for row in rows:
+        print('\033[40m' + str(row) + '\033[0m', end='  ')
+        for el in rows[row]:
+            print(el, end=' ')
+        print(' ' + '\033[40m' + str(row) + '\033[0m',)
+    print('\033[40m' + '   ' + 'A B C D E F G H' +  '   ' + '\033[0m')
 
+def getXYcords(cord) -> tuple:
+    y = int(cord[1])
+    letter_cord = cord[0].lower()
+    letters_dict = {
+        'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8
+    }
+    return letters_dict[letter_cord], y
 
-def get_possible_steps(fig, x, y):
+def get_possible_steps(fig, x, y) -> list:
     def queen_moves(x, y):
         var_moves = []
 
@@ -100,8 +123,7 @@ def get_possible_steps(fig, x, y):
 
         return var_moves
 
-    global pos_field
-    variants_unchecked = {
+    based_moves = {
         'P': [[x, y + 1], [x, y + 2]],
         'K': [[x - 1, y - 1], [x - 1, y], [x - 1, y + 1], [x, y - 1], [x, y + 1], [x + 1, y - 1], [x + 1, y],
               [x + 1, y + 1]],
@@ -110,7 +132,6 @@ def get_possible_steps(fig, x, y):
               [x - 2, y + 1], [x - 2, y - 1]],
         'R': rook_moves(x, y),
         'B': bishop_moves(x, y),
-
 
         'p': [[x, y - 1], [x, y - 2]],
         'k': [[x - 1, y - 1], [x - 1, y], [x - 1, y + 1], [x, y - 1], [x, y + 1], [x + 1, y - 1], [x + 1, y],
@@ -122,39 +143,74 @@ def get_possible_steps(fig, x, y):
         'b': bishop_moves(x, y)
     }
 
-    fig_steps = variants_unchecked[fig]
-    variants_checked = []
 
-    for comb in fig_steps:
-        # проверка на фигуру в клетке
+    return based_moves[fig]
+    # fig_steps = variants_unchecked[fig]
+    # variants_checked = []
+    #
+    # for comb in fig_steps:
+    #     # проверка на фигуру в клетке
+    #
+    #     if 1 <= comb[1] <= 8 and 0 <= comb[1] <= 7:
+    #         print(comb[1], comb[0])
+    #         fig_in_cell = pos_field[comb[1]][comb[0]]
+    #
+    #         if fig_in_cell == '.':
+    #             variants_checked.append(comb)
+    #
+    #         elif fig_in_cell != '.' and fig_in_cell.isupper() == fig.isupper():
+    #             variants_checked.append(comb)
+    #
+    # return variants_checked
 
-        if 1 <= comb[1] <= 8 and 0 <= comb[1] <= 7:
-            print(comb[1], comb[0])
-            fig_in_cell = pos_field[comb[1]][comb[0]]
+def getFinishCord() -> tuple:
+    while True:
+        try:
+            finishCord = input("Введите позицию, куда переставить фигуру(e.g. a3): ")
+            if (finishCord[0].lower() not in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+                    or finishCord[1] not in ['1', '2', '3', '4', '5', '6', '7', '8']):
+                raise ValueError
 
-            if fig_in_cell == '.':
-                variants_checked.append(comb)
+        except ValueError:
+            printBoard(rows)
+            print("Введена неккоректная позиция! Попробуйте ещё раз")
+            continue
 
-            elif fig_in_cell != '.' and fig_in_cell.isupper() == fig.isupper():
-                variants_checked.append(comb)
+        return getXYcords(finishCord)
 
-
-    return variants_checked
-
+def moveFigure(f, x, y):
+    pass
 
 def main():
-    try:
-        while True:
-            printBoard(rows)
-            print(f'Ход {getCurrentTurn()}')
+    error_type = None
+    while True:
+        printBoard()
+        print(f'Ход {getCurrentTurn()}')
+        if error_type == 'value':
+            print('Введена неккоректная команда! Попробуйте ещё раз')
+            error_type = None
+
+        # check for correct input
+        try:
             fig, cord = map(str, input("Введите фигуру и её позицию (e.g. p e4): ").split())
-            # check correct name & get available moves & color probable pos
 
+            if (fig.lower() not in ['p', 'q', 'k', 'b', 'n', 'r']
+                    or cord[1] not in ['1', '2', '3', '4', '5', '6', '7', '8']
+                    or cord[0].lower() not in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']):
+                raise ValueError
 
-            changeTurn()
-            # check for correct input
-    except:
-        pass
+        except ValueError:
+            error_type = 'value'
+            continue
+
+        # get available moves & color probable pos
+        steps = get_possible_steps(fig, *getXYcords(cord))
+        highlightAvailableMoves(steps)
+        for move in steps:
+            print(rows[move[1]][move[0] - 1])
+        # finishCord = getFinishCord()
+
+        changeTurn()
 
 
 main()
