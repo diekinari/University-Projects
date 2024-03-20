@@ -3,6 +3,26 @@ from copy import deepcopy
 from abc import ABC, abstractmethod
 from icecream import ic
 
+# Придумать 3 новых вида фигур с оригинальными правилами перемещения и реализовать их классы.
+# сложность 1
+#
+# Реализовать возможность «отката» ходов. С помощью специальной команды можно возвращаться на ход
+# (или заданное количество ходов) назад вплоть до начала партии.
+# сложность 1
+#
+# Реализовать функцию подсказки выбора новой позиции фигуры: после выбора фигуры для хода функция визуально на поле
+# показывает поля доступные для хода или фигуры соперника, доступные для взятия, выбранной фигурой.
+# сложность 1
+#
+# Реализовать функцию подсказки угрожаемых фигур: она возвращает информацию о том, какие фигуры ходящего игрока сейчас
+# находятся под боем (т.е. могут быть взяты соперником на следующий ход) и визуально выделяет их на поле.
+# Функция отдельно указывает на наличие шаха королю.
+# сложность 1
+#
+# Реализовать поддержку для пешки сложных правил: «взятие на проходе» и замены на другую фигуру при достижении крайней
+# горизонтали
+# сложность 1
+
 COORDINATES = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
 REV_COORDINATES = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e", 5: "f", 6: "g", 7: "h"}
 
@@ -28,7 +48,7 @@ class Figure(ABC):
 
     @abstractmethod
     def check_move(self, step):
-        raise NotImplementedError
+        """implement your own check_move function"""
 
 
 class Pawn(Figure):
@@ -39,6 +59,7 @@ class Pawn(Figure):
         self.dang = False
 
     def check_move(self, step, check=False):
+        # координаты изначально переданной фигуры
         new_i, new_j = step.new
         if check:
             return Engine.check_pawn(step, check)
@@ -151,12 +172,14 @@ class Engine:
 
     @staticmethod
     def check_pawn(step, check):
+        # координаты вражеской фигуры
         old_i, old_j = step.old
+        # координаты изначальной фигуры
         new_i, new_j = step.new
         if step.new_figure == ".":  # Просто ход
             if old_j == new_j:  # Проверяем, чтобы он был вертикальным
                 if step.figure.first_step:  # Если первый ход пешки
-                    step.figure.first_step = False if check is False else True
+                    step.figure.first_step = check
                     if step.figure.color == "black":
                         step.figure.dang = new_i - old_i == 2 and Engine.en_passant(step)
                         return 1 <= new_i - old_i <= 2
@@ -164,14 +187,14 @@ class Engine:
                         step.figure.dang = old_i - new_i == 2 and Engine.en_passant(
                             step)  # Проверка, это двойной ход или нет
                         return 1 <= old_i - new_i <= 2
-                step.figure.dang = False  # Если уже не первый ход, то ставим self.dang = False
+                step.figure.dang = False  # Если уже не первый ход, то self.dang = False
                 return new_i - old_i == 1 if step.figure.color == "black" else \
                     old_i - new_i == 1  # Либо на одну
             else:
                 fig = step.board[old_i][new_j]
                 if ((old_i - new_i == 1 if step.figure.color == "white" else old_i - new_i == 1) and
                         abs(new_j - old_j) == 1 and isinstance(fig, Pawn) and fig.dang):
-                    if check is False:
+                    if not check:
                         step.board[old_i][new_j] = "."
                         step.new = (new_i, new_j)
                     return True
@@ -276,8 +299,8 @@ class Engine:
 
     # . . . . . . .
     # . . . . . . .
-    # . . . 1 . . .
-    # . . * 2 * . .
+    # . . . . . . .
+    # . . * * * . .
     # . * . W . * .
     # . . * * * . .
     # . . . . . . .
@@ -321,6 +344,7 @@ class Engine:
 
     # . . . .
     # . * . .
+    # . . . .
     # . p P .
     # . . . .
     @staticmethod
@@ -335,8 +359,11 @@ class Engine:
         board = board_obj.board
         for i in range(8):
             for j in range(8):
+                # если объект фигура и она вражеская то проверяем её возможность хода относительно изначально переданной
                 if board[i][j] != "." and board[i][j].color != figure.color:
                     if i != coord[0] and j != coord[1]:
+                        # объект доски, координаты найденной вражеской, координаты переданной, объект переданной
+                        # old - найденная вражеская фигура, new - изначально переданная фигура
                         step = Step(board_obj, (i, j), new=coord, new_figure=figure)
                         if step.is_available():
                             if isinstance(figure, King):
@@ -365,14 +392,14 @@ class Step:
         self.old = Engine.reform(old) if isinstance(old, str) else old  # Старые координаты
         self.new = new  # Новые координаты
         self.new_figure = new_figure  # Новая фигура по новым координатам
-        self.figure = self.board[self.old[0]][self.old[1]]  # Фигура
+        self.figure = self.board[self.old[0]][self.old[1]]  # Старая Фигура
 
     def get_new(self, c):
         self.new = Engine.reform(c)
         self.new_figure = self.board[self.new[0]][self.new[1]]
 
     def is_available(self, check=True):
-        return self.figure.check_move(self, check) if isinstance(self.figure, Pawn | Warrior) \
+        return self.figure.check_move(self, check) if isinstance(self.figure, Pawn) \
             else self.figure.check_move(self)  # Если фигура может ходить
 
     def make_step(self, board):
@@ -385,9 +412,11 @@ class Step:
             for j in range(8):
                 temp_step = Step(pseudo_board_obj, self.old, (i, j), pseudo_board_obj.board[i][j])
                 if temp_step.is_available():
+                    # highlight empty cells
                     if pseudo_board_obj.board[i][j] == ".":
                         pseudo_board_obj.board[i][j] = "*"
                     else:
+                        # highlight enemy cells
                         pseudo_board_obj.board[i][j] = "\033[31m" + str(pseudo_board_obj.board[i][j]) + "\033[0m"
         return pseudo_board_obj.show()
 
@@ -436,7 +465,8 @@ class Board:
                 for j in range(len(board[i])):
                     piece = board[i][j]
                     if piece != ".":
-                        if piece.color != color:
+                        # check white if current color is white, etc
+                        if piece.color == color:
                             piece.dang = Engine.is_dang(board_obj, coord=(i, j), figure=piece)
                         else:
                             piece.dang = False
@@ -473,20 +503,21 @@ def main(board=None, current_step="white"):
     game = Game()
     game.add_to(board)
     while not isinstance(Engine.check_win(game.boards[-1].board), str):
-        print(game.boards[-1].show(warning=True, color="black" if current_step == "white" else "white"))
+        # вместе с отрисовкой показать предупреждения о фигурах стороны, которых могут съесть
+        print(game.boards[-1].show(warning=True, color=current_step))
         try:
-            old = input(
+            piece_cords = input(
                 f"Ход {len(game.boards)}, ходят {'белые' if current_step == 'white' else 'чёрные'}"
                 f". Введите координаты фигуры, которой хотите походить: ")
-            if old.startswith("назад"):
-                n = int(old.split()[1])
+            if piece_cords.startswith("назад"):
+                n = int(piece_cords.split()[1])
                 if len(game.boards) > n:
                     game.back(n)
                     current_step = "white" if len(game.boards) % 2 else "black"
                 else:
                     raise GoBackException("Назад невозможно!")
             else:
-                step = Step(game.boards[-1], old)
+                step = Step(game.boards[-1], piece_cords)
                 if step.figure.color != current_step:
                     raise WrongStepException("Неправильный ход!")
                 print(step.get_hint_board())
