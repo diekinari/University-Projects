@@ -352,7 +352,7 @@ class Engine:
         new_i, new_j = step.new
         return (isinstance(step.board[new_i][new_j - 1] if new_j - 1 >= 0 else None, Pawn) or
                 isinstance(step.board[new_i][new_j + 1] if new_j + 1 <= 7 else None,
-                           Pawn))  # Проверка, это двойной ход или нет
+                           Pawn))
 
     @staticmethod
     def is_dang(board_obj, coord, figure):
@@ -399,7 +399,7 @@ class Step:
         self.new_figure = self.board[self.new[0]][self.new[1]]
 
     def is_available(self, check=True):
-        return self.figure.check_move(self, check) if isinstance(self.figure, Pawn) \
+        return self.figure.check_move(self, check) if isinstance(self.figure, Pawn | Warrior) \
             else self.figure.check_move(self)  # Если фигура может ходить
 
     def make_step(self, board):

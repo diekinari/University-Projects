@@ -4,6 +4,7 @@ import datetime
 import random as rn
 import numpy as np
 import array
+from icecream import ic
 from functools import reduce
 
 
@@ -343,3 +344,241 @@ from functools import reduce
 #
 # print('modified matrix:')
 # print(newM)
+# task 34
+# class Stack:
+#     def __init__(self):
+#         self.items = []
+#
+#     def isEmpty(self):
+#         return self.items == []
+#
+#     def push(self, item):
+#         self.items.append(item)
+#
+#     def pop(self):
+#         return self.items.pop()
+#
+#     def peek(self):
+#         return self.items[len(self.items) - 1]
+#
+#     def size(self):
+#         return len(self.items)
+#
+#
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+
+#
+#
+# class Stack2:
+#     def __init__(self):
+#         self.top = None
+#         self.size = 0
+#
+#     def push(self, item):
+#         new_node = Node(item)
+#         if self.top is None:
+#             self.top = new_node
+#         else:
+#             new_node.next = self.top
+#             self.top = new_node
+#         self.size += 1
+#
+#     def pop(self):
+#         if self.top is None:
+#             return None
+#         else:
+#             popped_item = self.top.data
+#             self.top = self.top.next
+#             self.size -= 1
+#             return popped_item
+#
+#     def peek(self):
+#         if self.top is None:
+#             return None
+#         return self.top.data
+#
+#     def is_empty(self):
+#         return self.size == 0
+#
+#     def size(self):
+#         return self.size
+#
+#
+# s = Stack2()
+# word = 'топот'
+# for letter in word:
+#     s.push(letter)
+#
+# reversed_word = ''
+# while not s.is_empty():
+#     reversed_word += s.pop()
+#
+# print(reversed_word == word)
+
+# task 35
+class Queue:
+    def __init__(self):
+        self.items = []
+
+    def isEmpty(self):
+        return self.items == []
+
+    def enqueue(self, item):
+        self.items.append(item)
+
+    def peek(self):
+        return self.items[0]
+
+    def dequeue(self):
+        return self.items.pop(0)
+
+    def size(self):
+        return len(self.items)
+
+
+class QueueL:
+    def __init__(self):
+        self.front = None
+        self.rear = None
+        self.size = 0
+
+    def is_empty(self):
+        return self.size == 0
+
+    def enqueue(self, item):
+        new_node = Node(item)
+        if self.is_empty():
+            self.front = new_node
+            self.rear = new_node
+            self.front.next = self.rear
+        else:
+            self.rear.next = new_node
+            self.rear = new_node
+        self.size += 1
+
+    def dequeue(self):
+        if self.is_empty():
+            return None
+        else:
+            item = self.front.data
+            self.front = self.front.next
+            self.size -= 1
+            if self.is_empty():
+                self.rear = None
+            return item
+
+    def peek(self):
+        if self.is_empty():
+            return None
+        else:
+            return self.front.data
+
+    def size(self):
+        return self.size
+
+
+# Создать класс двусторонней очереди, который будет поддерживать операции добавления элемента в начало и конец очереди,
+# удаления элемента из начала и конца очереди, а также удаления минимального и максимального элементов из очереди.
+class TwoSidedNode(Node):
+    def __init__(self, data):
+        super().__init__(data)
+        self.next = None
+        self.prev = None
+
+
+class TwoSidedQueue:
+    def __init__(self):
+        self.front = None
+        self.rear = None
+        self.size = 0
+
+    def is_empty(self):
+        return self.size == 0
+
+    def enqueue(self, item):  # adding to an end
+        new_node = TwoSidedNode(item)
+        if self.is_empty():
+            self.front = new_node
+            self.rear = new_node
+            self.front.prev = self.rear
+            self.rear.next = self.front
+        else:
+            self.rear.prev = new_node
+            new_node.front = self.rear
+            self.rear = new_node
+        self.size += 1
+
+    def startEnqueue(self, item):  # adding to the beginning
+        new_node = TwoSidedNode(item)
+        if self.is_empty():
+            self.front = new_node
+            self.rear = new_node
+            self.front.prev = self.rear
+            self.rear.next = self.front
+        else:
+            self.front.next = new_node
+            new_node.prev = self.front
+            self.front = new_node
+        self.size += 1
+
+    def dequeue(self):  # deleting from the beginning
+        if self.is_empty():
+            return None
+        else:
+            item = self.front.data
+            if self.front.prev is not None:
+                self.front.prev.next = None
+            self.front = self.front.prev
+            self.size -= 1
+            if self.is_empty():
+                self.rear = None
+            return item
+
+    def endDequeue(self):  # deleting from the end
+        if self.is_empty():
+            return None
+        else:
+            item = self.rear.data
+            self.rear = self.rear.next
+
+            self.size -= 1
+            if self.is_empty():
+                self.front = None
+            return item
+
+    def peek(self):
+        if self.is_empty():
+            return None
+        else:
+            return self.front.data
+
+    def size(self):
+        return self.size
+
+
+t_q = TwoSidedQueue()
+# add to end
+t_q.enqueue(1)
+t_q.enqueue(2)
+t_q.enqueue(3)
+t_q.enqueue(4)
+t_q.enqueue(5)
+ic(t_q.peek())
+
+# delete 1 at start
+ic(t_q.dequeue())
+# add 10 to start
+t_q.startEnqueue(10)
+ic(t_q.peek())
+# delete 10
+t_q.dequeue()
+# show next start
+ic(t_q.peek())
+
+# delete 5 at end
+ic(t_q.endDequeue())
+
