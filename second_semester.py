@@ -344,7 +344,7 @@ from functools import reduce
 #
 # print('modified matrix:')
 # print(newM)
-# task 34
+# task 33
 # class Stack:
 #     def __init__(self):
 #         self.items = []
@@ -419,70 +419,244 @@ class Node:
 #
 # print(reversed_word == word)
 
+# task 34
+# class Queue:
+#     def __init__(self):
+#         self.items = []
+#
+#     def isEmpty(self):
+#         return self.items == []
+#
+#     def enqueue(self, item):
+#         self.items.append(item)
+#
+#     def peek(self):
+#         return self.items[0]
+#
+#     def dequeue(self):
+#         return self.items.pop(0)
+#
+#     def size(self):
+#         return len(self.items)
+#
+#
+# class QueueL:
+#     def __init__(self):
+#         self.front = None
+#         self.rear = None
+#         self.size = 0
+#
+#     def is_empty(self):
+#         return self.size == 0
+#
+#     def enqueue(self, item):
+#         new_node = Node(item)
+#         if self.is_empty():
+#             self.front = new_node
+#             self.rear = new_node
+#             self.front.next = self.rear
+#         else:
+#             self.rear.next = new_node
+#             self.rear = new_node
+#         self.size += 1
+#
+#     def dequeue(self):
+#         if self.is_empty():
+#             return None
+#         else:
+#             item = self.front.data
+#             self.front = self.front.next
+#             self.size -= 1
+#             if self.is_empty():
+#                 self.rear = None
+#             return item
+#
+#     def peek(self):
+#         if self.is_empty():
+#             return None
+#         else:
+#             return self.front.data
+#
+#     def size(self):
+#         return self.size
+#
+#
+# # Создать класс двусторонней очереди, который будет поддерживать операции добавления элемента в начало и конец очереди,
+# # удаления элемента из начала и конца очереди, а также удаления минимального и максимального элементов из очереди.
+# # class TwoSidedNode(Node):
+# #     def __init__(self, data):
+# #         super().__init__(data)
+# #         self.next = None
+# #         self.prev = None
+#
+#
+# # class TwoSidedQueue:
+# #     def __init__(self):
+# #         self.front = None
+# #         self.rear = None
+# #         self.size = 0
+# #
+# #     def is_empty(self):
+# #         return self.size == 0
+# #
+# #     def enqueue(self, item):  # adding to an end
+# #         new_node = TwoSidedNode(item)
+# #         if self.is_empty():
+# #             self.front = new_node
+# #             self.rear = new_node
+# #             self.front.prev = self.rear
+# #             self.rear.next = self.front
+# #         else:
+# #             self.rear.prev = new_node
+# #             new_node.front = self.rear
+# #             self.rear = new_node
+# #         self.size += 1
+# #
+# #     def startEnqueue(self, item):  # adding to the beginning
+# #         new_node = TwoSidedNode(item)
+# #         if self.is_empty():
+# #             self.front = new_node
+# #             self.rear = new_node
+# #             self.front.prev = self.rear
+# #             self.rear.next = self.front
+# #         else:
+# #             self.front.next = new_node
+# #             new_node.prev = self.front
+# #             self.front = new_node
+# #         self.size += 1
+# #
+# #     def dequeue(self):  # deleting from the beginning
+# #         if self.is_empty():
+# #             return None
+# #         else:
+# #             item = self.front.data
+# #             if self.front.prev is not None:
+# #                 self.front.prev.next = None
+# #             self.front = self.front.prev
+# #             self.size -= 1
+# #             if self.is_empty():
+# #                 self.rear = None
+# #             return item
+# #
+# #     def endDequeue(self):  # deleting from the end
+# #         if self.is_empty():
+# #             return None
+# #         else:
+# #             item = self.rear.data
+# #             self.rear = self.rear.next
+# #
+# #             self.size -= 1
+# #             if self.is_empty():
+# #                 self.front = None
+# #             return item
+# #
+# #     def peek(self):
+# #         if self.is_empty():
+# #             return None
+# #         else:
+# #             return self.front.data
+# #
+# #     def size(self):
+# #         return self.size
+#
+# # t_q = TwoSidedQueue()
+# # # add to end
+# # t_q.enqueue(1)
+# # t_q.enqueue(2)
+# # t_q.enqueue(3)
+# # t_q.enqueue(4)
+# # t_q.enqueue(5)
+# # ic(t_q.peek())
+# #
+# # # delete 1 at start
+# # ic(t_q.dequeue())
+# # # add 10 to start
+# # t_q.startEnqueue(10)
+# # ic(t_q.peek())
+# # # delete 10
+# # t_q.dequeue()
+# # # show next start
+# # ic(t_q.peek())
+# #
+# # # delete 5 at end
+# # ic(t_q.endDequeue())
+#
+# class DoubleEndedQueue:
+#     def __init__(self):
+#         self.queue = []
+#
+#     def add_front(self, item):
+#         self.queue.insert(0, item)
+#
+#     def add_rear(self, item):
+#         self.queue.append(item)
+#
+#     def remove_front(self):
+#         if self.is_empty():
+#             return None
+#         return self.queue.pop(0)
+#
+#     def remove_rear(self):
+#         if self.is_empty():
+#             return None
+#         return self.queue.pop()
+#
+#     def remove_min(self):
+#         if self.is_empty():
+#             return None
+#         min_val = min(self.queue)
+#         self.queue.remove(min_val)
+#         return min_val
+#
+#     def remove_max(self):
+#         if self.is_empty():
+#             return None
+#         max_val = max(self.queue)
+#         self.queue.remove(max_val)
+#         return max_val
+#
+#     def is_empty(self):
+#         return len(self.queue) == 0
+#
+#     def size(self):
+#         return len(self.queue)
+#
+#
+# deque = DoubleEndedQueue()
+# deque.add_front(10)
+# deque.add_rear(20)
+# deque.add_front(5)
+#
+# print("Size of deque:", deque.size())
+# print("Removed from front:", deque.remove_front())
+# print("Removed from rear:", deque.remove_rear())
+# print("Size of deque after removals:", deque.size())
+#
+# deque.add_rear(30)
+# deque.add_front(2)
+# deque.add_rear(25)
+#
+# print("Deque:", deque.queue)
+# print("Removed min value:", deque.remove_min())
+# print("Removed max value:", deque.remove_max())
+# print("Deque after min and max removals:", deque.queue)
+
 # task 35
-class Queue:
-    def __init__(self):
-        self.items = []
+# Создайте двусвязный список для хранения информации о задачах в проекте по разработке программного обеспечения.
+# Каждый элемент списка должен содержать название задачи, описание, дату начала и дату окончания, а также информацию о
+# том, какие разработчики работают над этой задачей.
+class DevelopingTask:
+    def __init__(self, title, description, startDate, endDate, developersList):
+        self.title = title
+        self.description = description
+        self.startDate = startDate
+        self.endDate = endDate
+        self.developersList = developersList
 
-    def isEmpty(self):
-        return self.items == []
-
-    def enqueue(self, item):
-        self.items.append(item)
-
-    def peek(self):
-        return self.items[0]
-
-    def dequeue(self):
-        return self.items.pop(0)
-
-    def size(self):
-        return len(self.items)
+    def __str__(self):
+        return f'{self.title}, {self.description}, {self.startDate}, {self.endDate}, {self.developersList}'
 
 
-class QueueL:
-    def __init__(self):
-        self.front = None
-        self.rear = None
-        self.size = 0
-
-    def is_empty(self):
-        return self.size == 0
-
-    def enqueue(self, item):
-        new_node = Node(item)
-        if self.is_empty():
-            self.front = new_node
-            self.rear = new_node
-            self.front.next = self.rear
-        else:
-            self.rear.next = new_node
-            self.rear = new_node
-        self.size += 1
-
-    def dequeue(self):
-        if self.is_empty():
-            return None
-        else:
-            item = self.front.data
-            self.front = self.front.next
-            self.size -= 1
-            if self.is_empty():
-                self.rear = None
-            return item
-
-    def peek(self):
-        if self.is_empty():
-            return None
-        else:
-            return self.front.data
-
-    def size(self):
-        return self.size
-
-
-# Создать класс двусторонней очереди, который будет поддерживать операции добавления элемента в начало и конец очереди,
-# удаления элемента из начала и конца очереди, а также удаления минимального и максимального элементов из очереди.
 class TwoSidedNode(Node):
     def __init__(self, data):
         super().__init__(data)
@@ -490,7 +664,7 @@ class TwoSidedNode(Node):
         self.prev = None
 
 
-class TwoSidedQueue:
+class TwoSidedList:
     def __init__(self):
         self.front = None
         self.rear = None
@@ -499,7 +673,7 @@ class TwoSidedQueue:
     def is_empty(self):
         return self.size == 0
 
-    def enqueue(self, item):  # adding to an end
+    def add_end(self, item):  # adding to an end
         new_node = TwoSidedNode(item)
         if self.is_empty():
             self.front = new_node
@@ -512,7 +686,7 @@ class TwoSidedQueue:
             self.rear = new_node
         self.size += 1
 
-    def startEnqueue(self, item):  # adding to the beginning
+    def add_start(self, item):  # adding to the beginning
         new_node = TwoSidedNode(item)
         if self.is_empty():
             self.front = new_node
@@ -525,7 +699,7 @@ class TwoSidedQueue:
             self.front = new_node
         self.size += 1
 
-    def dequeue(self):  # deleting from the beginning
+    def del_start(self):  # deleting from the beginning
         if self.is_empty():
             return None
         else:
@@ -538,13 +712,14 @@ class TwoSidedQueue:
                 self.rear = None
             return item
 
-    def endDequeue(self):  # deleting from the end
+    def del_end(self):  # deleting from the end
         if self.is_empty():
             return None
         else:
             item = self.rear.data
+            if self.rear.next is not None:
+                self.rear.next.prev = None
             self.rear = self.rear.next
-
             self.size -= 1
             if self.is_empty():
                 self.front = None
@@ -560,25 +735,41 @@ class TwoSidedQueue:
         return self.size
 
 
-t_q = TwoSidedQueue()
-# add to end
-t_q.enqueue(1)
-t_q.enqueue(2)
-t_q.enqueue(3)
-t_q.enqueue(4)
-t_q.enqueue(5)
-ic(t_q.peek())
+#
+# tq = TwoSidedList()
+# tq.add_end(DevelopingTask('website', 'desc1', '01-03-24', '05-03-24', ['Mark', 'John']))
+# tq.add_end(DevelopingTask('server side', 'desc2', '20-03-24', '30-03-24', ['Mark', 'Alex']))
+# print(tq.size)
+# print(tq.peek())
 
-# delete 1 at start
-ic(t_q.dequeue())
-# add 10 to start
-t_q.startEnqueue(10)
-ic(t_q.peek())
-# delete 10
-t_q.dequeue()
-# show next start
-ic(t_q.peek())
+# task 36
+def find_intersection(list1, list2):
+    visited = {}
+    current = list1
 
-# delete 5 at end
-ic(t_q.endDequeue())
+    while current:
+        visited[current.data] = True
+        current = current.next
 
+    current = list2
+    while current:
+        if current.data in visited:
+            return current.data
+        current = current.next
+
+    return None
+
+
+list1 = TwoSidedList()
+list1.add_end(TwoSidedNode(1))
+list1.add_end(TwoSidedNode(2))
+list1.add_end(TwoSidedNode(3))
+list1.add_end(TwoSidedNode(4))
+
+list2 = TwoSidedList()
+list2.add_end(TwoSidedNode(2))
+list2.add_end(TwoSidedNode(3))
+list2.add_end(TwoSidedNode(4))
+list2.add_end(TwoSidedNode(5))
+
+print(find_intersection(list1.front, list2.front))
