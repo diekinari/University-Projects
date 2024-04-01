@@ -2,7 +2,8 @@ import itertools
 import math
 import datetime
 import random as rn
-import numpy as np
+# import numpy as np
+import csv
 import array
 from icecream import ic
 from functools import reduce
@@ -883,9 +884,119 @@ class TwoSidedList:
 # print(list1.front.data, list1.front.prev.data)
 
 # task 38
+
 # Необходимо отсортировать массив объектов по определенному полю и вывести результат на экран. В зависимости от
 # переданного параметра отсортировать массив объектов по возрастанию или по убыванию значения определенного поля,
 # используя алгоритмы сортировки: сортировку выбором, сортировку пузырьком и быструю сортировку.
 # Сравнить время выполнения алгоритмов сортировки с помощью декоратора. Данные об объектах хранятся в файле.
 
 
+people = [
+    {"name": "Alexey", "age": 25, "city": "Moscow"},
+    {"name": "Ekaterina", "age": 30, "city": "Saint Petersburg"},
+    {"name": "Ivan", "age": 35, "city": "Novosibirsk"},
+    {"name": "Maria", "age": 28, "city": "Yekaterinburg"},
+    {"name": "Dmitry", "age": 40, "city": "Kazan"},
+    {"name": "Anna", "age": 22, "city": "Omsk"},
+    {"name": "Pavel", "age": 33, "city": "Chelyabinsk"},
+    {"name": "Olga", "age": 29, "city": "Samara"},
+    {"name": "Sergey", "age": 27, "city": "Ufa"},
+    {"name": "Natalia", "age": 31, "city": "Vladivostok"}
+]
+
+
+class Person:
+    def __init__(self, name, age, city):
+        self.name = name
+        self.age = age
+        self.city = city
+
+    def __str__(self):
+        return f"Name: {self.name}, Age: {self.age}, City: {self.city}"
+
+
+list_of_people = []
+for person in people:
+    list_of_people.append(Person(person['name'], person['age'], person['city']))
+
+with open("people.csv", "w", newline="") as file:
+    writer = csv.writer(file)
+    headers = ["name", "age", "city"]
+    writer.writerow(headers)
+    for person in list_of_people:
+        row = [person.name, person.age, person.city]
+        writer.writerow(row)
+
+
+read_list_of_products = []
+
+with open('people.csv', 'r') as file:
+    reader = csv.reader(file)
+    next(reader)
+    for row in reader:
+        read_list_of_products.append(Person(row[0], int(row[1]), row[2]))
+
+
+def measure_time(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"\nВремя выполнения сортировки: {end - start:.6f} сек.")
+        return result
+    return wrapper
+
+import time
+
+def bubble_sort(products, period=0, reverse=False):
+    n = len(products)
+    for i in range(n):
+        for j in range(n - i - 1):
+            if not reverse:
+                if products[j].total_revenue(period) > products[j + 1].total_revenue(period):
+                    products[j], products[j + 1] = products[j + 1], products[j]
+            else:
+                if products[j].total_revenue(period) < products[j + 1].total_revenue(period):
+                    products[j], products[j + 1] = products[j + 1], products[j]
+    return products
+
+# реализация алгоритма сортировки выбором
+def selection_sort(products, period=0, reverse=False):
+    n = len(products)
+    for i in range(n):
+        min_idx = i
+        for j in range(i + 1, n):
+            if reverse:
+                if products[j].total_revenue(period) > products[min_idx].total_revenue(period):
+                    min_idx = j
+            else:
+                if products[j].total_revenue(period) < products[min_idx].total_revenue(period):
+                    min_idx = j
+        products[i], products[min_idx] = products[min_idx], products[i]
+    return products
+
+def quick_sort(products, period=0, reverse=False):
+    if len(products) <= 1:
+        return products
+    else:
+        pivot = products[0]
+        left = []
+        right = []
+        for i in range(1, len(products)):
+            if products[i].total_revenue(period) < pivot.total_revenue(period):
+                left.append(products[i])
+            else:
+                right.append(products[i])
+        if reverse:
+            return quick_sort(right, period, reverse=True) + [pivot] + quick_sort(left, period, reverse=True)
+        else:
+            return quick_sort(left, period) + [pivot] + quick_sort(right, period)
+
+@measure_time
+def sort(products, method='1', period=0, reverse=False):
+    if method == '1':
+        return bubble_sort(products, period, reverse)
+    elif method == '2':
+        return selection_sort(products, period, reverse)
+    elif method == '3':
+        return quick_sort(products, period, reverse)
