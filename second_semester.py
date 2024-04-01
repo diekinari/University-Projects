@@ -682,7 +682,7 @@ class TwoSidedList:
             self.rear.next = self.front
         else:
             self.rear.prev = new_node
-            new_node.front = self.rear
+            new_node.next = self.rear
             self.rear = new_node
         self.size += 1
 
@@ -743,33 +743,149 @@ class TwoSidedList:
 # print(tq.peek())
 
 # task 36
-def find_intersection(list1, list2):
-    visited = {}
-    current = list1
+# def find_intersection(l1, l2):
+#     visited = {}
+#     current = l1.rear
+#
+#     for i in range(l1.size):
+#         visited[current.data] = True
+#         current = current.next
+#
+#     current = l2.rear
+#     for i in range(l2.size):
+#
+#         if current.data in visited:
+#             return current.data
+#         current = current.next
+#
+#     return None
+#
+#
+# list1 = TwoSidedList()
+# list1.add_end(1)
+# list1.add_end(2)
+# list1.add_end(3)
+# list1.add_end(4)
+#
+# list2 = TwoSidedList()
+# list2.add_end(4)
+# list2.add_end(5)
+# list2.add_end(6)
+# list2.add_end(7)
+#
+# print(find_intersection(list1, list2))
 
-    while current:
-        visited[current.data] = True
-        current = current.next
+# task 37
+# class CycleTwoSidedList:
+#     def __init__(self):
+#         self.front = None
+#         self.rear = None
+#         self.size = 0
+#
+#     def is_empty(self):
+#         return self.size == 0
+#
+#     def add_end(self, item):  # adding to an end
+#         new_node = TwoSidedNode(item)
+#         if self.is_empty():
+#             self.front = new_node
+#             self.rear = new_node
+#             self.front.prev = self.rear
+#             self.front.next = self.rear
+#             self.rear.next = self.front
+#             self.rear.prev = self.front
+#         else:
+#             self.front.next = new_node
+#             self.rear.prev = new_node
+#             new_node.next = self.rear
+#             new_node.prev = self.front
+#             self.rear = new_node
+#         self.size += 1
+#
+#     def add_start(self, item):  # adding to the beginning
+#         new_node = TwoSidedNode(item)
+#         if self.is_empty():
+#             self.front = new_node
+#             self.rear = new_node
+#             self.front.prev = self.rear
+#             self.front.next = self.rear
+#             self.rear.next = self.front
+#             self.rear.prev = self.front
+#         else:
+#             self.rear.prev = new_node
+#             self.front.next = new_node
+#             new_node.prev = self.front
+#             new_node.next = self.rear
+#             self.front = new_node
+#         self.size += 1
+#
+#     def add_at_position(self, item, position):
+#         position -= 1
+#         if position < 0 or position > self.size:
+#             raise IndexError("Invalid position")
+#         if position == 0:
+#             self.add_start(item)
+#         elif position == self.size:
+#             self.add_end(item)
+#         else:
+#             new_node = TwoSidedNode(item)
+#             current = self.front
+#             for i in range(position):
+#                 current = current.prev
+#             new_node.next = current.next
+#             new_node.prev = current
+#             current.next.prev = new_node
+#             current.next = new_node
+#             self.size += 1
+#
+#     def del_start(self):  # deleting from the beginning
+#         if self.is_empty():
+#             return None
+#         else:
+#             item = self.front.data
+#             if self.front.prev is not None:
+#                 self.front.prev.next = self.rear
+#             self.front = self.front.prev
+#             self.size -= 1
+#             if self.is_empty():
+#                 self.rear = None
+#             return item
+#
+#     def del_end(self):  # deleting from the end
+#         if self.is_empty():
+#             return None
+#         else:
+#             item = self.rear.data
+#             if self.rear.next is not None:
+#                 self.rear.next.prev = self.front
+#             self.rear = self.rear.next
+#             self.size -= 1
+#             if self.is_empty():
+#                 self.front = None
+#             return item
+#
+#     def peek(self):
+#         if self.is_empty():
+#             return None
+#         else:
+#             return self.front.data
+#
+#     def size(self):
+#         return self.size
+#
+#
+# list1 = CycleTwoSidedList()
+# list1.add_end(1)
+# list1.add_end(2)
+# list1.add_end(3)
+# list1.add_end(4)
+# list1.add_at_position(999, 2)
+# print(list1.front.data, list1.front.prev.data)
 
-    current = list2
-    while current:
-        if current.data in visited:
-            return current.data
-        current = current.next
-
-    return None
+# task 38
+# Необходимо отсортировать массив объектов по определенному полю и вывести результат на экран. В зависимости от
+# переданного параметра отсортировать массив объектов по возрастанию или по убыванию значения определенного поля,
+# используя алгоритмы сортировки: сортировку выбором, сортировку пузырьком и быструю сортировку.
+# Сравнить время выполнения алгоритмов сортировки с помощью декоратора. Данные об объектах хранятся в файле.
 
 
-list1 = TwoSidedList()
-list1.add_end(TwoSidedNode(1))
-list1.add_end(TwoSidedNode(2))
-list1.add_end(TwoSidedNode(3))
-list1.add_end(TwoSidedNode(4))
-
-list2 = TwoSidedList()
-list2.add_end(TwoSidedNode(2))
-list2.add_end(TwoSidedNode(3))
-list2.add_end(TwoSidedNode(4))
-list2.add_end(TwoSidedNode(5))
-
-print(find_intersection(list1.front, list2.front))
