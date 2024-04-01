@@ -2,7 +2,9 @@ import itertools
 import math
 import datetime
 import random as rn
+import time
 # import numpy as np
+from collections import deque
 import csv
 import array
 from icecream import ic
@@ -891,112 +893,281 @@ class TwoSidedList:
 # Сравнить время выполнения алгоритмов сортировки с помощью декоратора. Данные об объектах хранятся в файле.
 
 
-people = [
-    {"name": "Alexey", "age": 25, "city": "Moscow"},
-    {"name": "Ekaterina", "age": 30, "city": "Saint Petersburg"},
-    {"name": "Ivan", "age": 35, "city": "Novosibirsk"},
-    {"name": "Maria", "age": 28, "city": "Yekaterinburg"},
-    {"name": "Dmitry", "age": 40, "city": "Kazan"},
-    {"name": "Anna", "age": 22, "city": "Omsk"},
-    {"name": "Pavel", "age": 33, "city": "Chelyabinsk"},
-    {"name": "Olga", "age": 29, "city": "Samara"},
-    {"name": "Sergey", "age": 27, "city": "Ufa"},
-    {"name": "Natalia", "age": 31, "city": "Vladivostok"}
-]
+# people = [
+#     {"name": "Alexey", "age": 25, "city": "Moscow"},
+#     {"name": "Ekaterina", "age": 30, "city": "Saint Petersburg"},
+#     {"name": "Ivan", "age": 35, "city": "Novosibirsk"},
+#     {"name": "Maria", "age": 28, "city": "Yekaterinburg"},
+#     {"name": "Dmitry", "age": 40, "city": "Kazan"},
+#     {"name": "Anna", "age": 22, "city": "Omsk"},
+#     {"name": "Pavel", "age": 33, "city": "Chelyabinsk"},
+#     {"name": "Olga", "age": 29, "city": "Samara"},
+#     {"name": "Sergey", "age": 27, "city": "Ufa"},
+#     {"name": "Natalia", "age": 31, "city": "Vladivostok"}
+# ]
+#
+#
+# class Person:
+#     def __init__(self, name, age, city):
+#         self.name = name
+#         self.age = age
+#         self.city = city
+#
+#     def __str__(self):
+#         return f"Name: {self.name}, Age: {self.age}, City: {self.city}"
+#
+#
+# list_of_people = []
+# for person in people:
+#     list_of_people.append(Person(person['name'], person['age'], person['city']))
+#
+# with open("people.csv", "w", newline="") as file:
+#     writer = csv.writer(file)
+#     headers = ["name", "age", "city"]
+#     writer.writerow(headers)
+#     for person in list_of_people:
+#         row = [person.name, person.age, person.city]
+#         writer.writerow(row)
+#
+# read_list_of_people = []
+#
+# with open('people.csv', 'r') as file:
+#     reader = csv.reader(file)
+#     next(reader)
+#     for row in reader:
+#         read_list_of_people.append(Person(row[0], int(row[1]), row[2]))
+#
+#
+# def measure_time(func):
+#     def wrapper(*args, **kwargs):
+#         start = time.time()
+#         result = func(*args, **kwargs)
+#         end = time.time()
+#         print(f"\nВремя выполнения сортировки: {end - start:.6f} сек.")
+#         return result
+#
+#     return wrapper
+#
+#
+# def bubble_sort(ppl, reverse=False):
+#     n = len(ppl)
+#     for i in range(n):
+#         for j in range(n - i - 1):
+#             if not reverse:
+#                 if ppl[j].age > ppl[j+ 1].age:
+#                     ppl[j], ppl[j + 1] = ppl[j + 1], ppl[j]
+#             else:
+#                 if ppl[j].age < ppl[j + 1].age:
+#                     ppl[j], ppl[j + 1] = ppl[j + 1], ppl[j]
+#     return ppl
+#
+#
+# def selection_sort(ppl, reverse=False):
+#     n = len(ppl)
+#     for i in range(n):
+#         min_idx = i
+#         for j in range(i + 1, n):
+#             if reverse:
+#                 if ppl[j].age > ppl[min_idx].age:
+#                     min_idx = j
+#             else:
+#                 if ppl[j].age < ppl[min_idx].age:
+#                     min_idx = j
+#         ppl[i], ppl[min_idx] = ppl[min_idx], ppl[i]
+#     return ppl
+#
+#
+# def quick_sort(ppl, reverse=False):
+#     if len(ppl) <= 1:
+#         return ppl
+#     else:
+#         pivot = ppl[0]
+#         left = []
+#         right = []
+#         for i in range(1, len(ppl)):
+#             if ppl[i].age < pivot.age:
+#                 left.append(ppl[i])
+#             else:
+#                 right.append(ppl[i])
+#         if reverse:
+#             return quick_sort(right, reverse=True) + [pivot] + quick_sort(left, reverse=True)
+#         else:
+#             return quick_sort(left) + [pivot] + quick_sort(right,)
+#
+#
+# @measure_time
+# def sort(ppl, method='1', reverse=False):
+#     if method == '1':
+#         return bubble_sort(ppl, reverse)
+#     elif method == '2':
+#         return selection_sort(ppl, reverse)
+#     elif method == '3':
+#         return quick_sort(ppl, reverse)
+#
+# print('Unsorted list:')
+# for el in read_list_of_people:
+#     print(el.age, end=' ')
+# print('\n' + '---', end='')
+# methods = ['1', '2', '3']
+# for m in methods:
+#     for el in sort(read_list_of_people, method=m):
+#         print(el.age, end=' ')
 
+# task 39
+# Реализовать класс бинарного дерева. Написать функцию для нахождения диаметра бинарного дерева
+# (максимального расстояния между двумя узлами).
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
 
-class Person:
-    def __init__(self, name, age, city):
-        self.name = name
-        self.age = age
-        self.city = city
+class BinaryTree:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, data):
+        new_node = Node(data)
+        if self.root is None:
+            self.root = new_node
+        else:
+            current = self.root
+            while True:
+                if data < current.data:
+                    if current.left is None:
+                        current.left = new_node
+                        break
+                    else:
+                        current = current.left
+                else:
+                    if current.right is None:
+                        current.right = new_node
+                        break
+                    else:
+                        current = current.right
+
+    def search(self, data):
+        current = self.root
+        while current is not None:
+            if data == current.data:
+                return True
+            elif data < current.data:
+                current = current.left
+            else:
+                current = current.right
+        return False
+
+    def delete(self, data):
+        if self.root is not None:
+            self.root = self._delete(data, self.root)
+
+    def _delete(self, data, node):
+        if node is None:
+            return node
+
+        if data < node.data:
+            node.left = self._delete(data, node.left)
+        elif data > node.data:
+            node.right = self._delete(data, node.right)
+        else:
+            if node.left is None:
+                return node.right
+            elif node.right is None:
+                return node.left
+
+            temp = self._find_min_node(node.right)
+            node.data = temp.data
+            node.right = self._delete(temp.data, node.right)
+
+        return node
+
+    def _find_min_node(self, node):
+        while node.left is not None:
+            node = node.left
+        return node
 
     def __str__(self):
-        return f"Name: {self.name}, Age: {self.age}, City: {self.city}"
+        return '\n'.join(self._display(self.root)[0])
+
+    def _display(self, node):
+        if node.right is None and node.left is None:
+            line = str(node.data)
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        if node.right is None:
+            lines, n, p, x = self._display(node.left)
+            s = str(node.data)
+            u = len(s)
+            first_line = (x + 1)*' ' + (n - x - 1)*'_' + s
+            second_line = x*' ' + '/' + (n - x - 1 + u)*' '
+            shifted_lines = [line + u*' ' for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
+
+        if node.left is None:
+            lines, n, p, x = self._display(node.right)
+            s = str(node.data)
+            u = len(s)
+            first_line = s + x*'_' + (n - x)*' '
+            second_line = (u + x)*' ' + '\\' + (n - x - 1)*' '
+            shifted_lines = [u*' ' + line for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
 
 
-list_of_people = []
-for person in people:
-    list_of_people.append(Person(person['name'], person['age'], person['city']))
+        left, n, p, x = self._display(node.left)
+        right, m, q, y = self._display(node.right)
+        s = str(node.data)
+        u = len(s)
+        first_line = (x + 1)*' ' + (n - x - 1)*'_' + s + y*'_' + (m - y)*' '
+        second_line = x*' ' + '/' + (n - x - 1 + u + y)*' ' + '\\' + (m - y - 1)*' '
+        if p < q:
+            left += [n*' ']*(q - p)
+        elif q < p:
+            right += [m*' ']*(p - q)
+        zipped_lines = zip(left, right)
+        lines = [first_line, second_line] + [a + u*' ' + b for a, b in zipped_lines]
+        return lines, n + m + u, max(p, q) + 2, n + u // 2
 
-with open("people.csv", "w", newline="") as file:
-    writer = csv.writer(file)
-    headers = ["name", "age", "city"]
-    writer.writerow(headers)
-    for person in list_of_people:
-        row = [person.name, person.age, person.city]
-        writer.writerow(row)
+    def diameter(self):
+        def _height_and_diameter(node):
+            if node is None:
+                return 0, 0  # Height and diameter are both 0 for an empty tree
+
+            left_height, left_diameter = _height_and_diameter(node.left)
+            right_height, right_diameter = _height_and_diameter(node.right)
+
+            # Height of the current node is 1 (node itself) + max height of its children
+            height = 1 + max(left_height, right_height)
+
+            # Diameter can be either:
+            # 1. The diameter of the left subtree
+            # 2. The diameter of the right subtree
+            # 3. The sum of the height of the left and right subtrees + 1 (passing through the current node)
+            diameter = max(left_diameter, right_diameter, left_height + right_height + 1)
+
+            return height, diameter
+
+        _, diameter = _height_and_diameter(self.root)
+        return diameter
 
 
-read_list_of_products = []
-
-with open('people.csv', 'r') as file:
-    reader = csv.reader(file)
-    next(reader)
-    for row in reader:
-        read_list_of_products.append(Person(row[0], int(row[1]), row[2]))
 
 
-def measure_time(func):
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        result = func(*args, **kwargs)
-        end = time.time()
-        print(f"\nВремя выполнения сортировки: {end - start:.6f} сек.")
-        return result
-    return wrapper
+# Example tree:
+#        1
+#       / \
+#      2   3
+#     / \
+#    4   5
 
-import time
+tree = BinaryTree()
+tree.root = Node(1)
+tree.root.left = Node(2)
+tree.root.right = Node(3)
+tree.root.left.left = Node(4)
+tree.root.left.right = Node(5)
 
-def bubble_sort(products, period=0, reverse=False):
-    n = len(products)
-    for i in range(n):
-        for j in range(n - i - 1):
-            if not reverse:
-                if products[j].total_revenue(period) > products[j + 1].total_revenue(period):
-                    products[j], products[j + 1] = products[j + 1], products[j]
-            else:
-                if products[j].total_revenue(period) < products[j + 1].total_revenue(period):
-                    products[j], products[j + 1] = products[j + 1], products[j]
-    return products
 
-# реализация алгоритма сортировки выбором
-def selection_sort(products, period=0, reverse=False):
-    n = len(products)
-    for i in range(n):
-        min_idx = i
-        for j in range(i + 1, n):
-            if reverse:
-                if products[j].total_revenue(period) > products[min_idx].total_revenue(period):
-                    min_idx = j
-            else:
-                if products[j].total_revenue(period) < products[min_idx].total_revenue(period):
-                    min_idx = j
-        products[i], products[min_idx] = products[min_idx], products[i]
-    return products
-
-def quick_sort(products, period=0, reverse=False):
-    if len(products) <= 1:
-        return products
-    else:
-        pivot = products[0]
-        left = []
-        right = []
-        for i in range(1, len(products)):
-            if products[i].total_revenue(period) < pivot.total_revenue(period):
-                left.append(products[i])
-            else:
-                right.append(products[i])
-        if reverse:
-            return quick_sort(right, period, reverse=True) + [pivot] + quick_sort(left, period, reverse=True)
-        else:
-            return quick_sort(left, period) + [pivot] + quick_sort(right, period)
-
-@measure_time
-def sort(products, method='1', period=0, reverse=False):
-    if method == '1':
-        return bubble_sort(products, period, reverse)
-    elif method == '2':
-        return selection_sort(products, period, reverse)
-    elif method == '3':
-        return quick_sort(products, period, reverse)
+print(tree.diameter())
