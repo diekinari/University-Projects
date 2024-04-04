@@ -1016,158 +1016,232 @@ class TwoSidedList:
 # task 39
 # Реализовать класс бинарного дерева. Написать функцию для нахождения диаметра бинарного дерева
 # (максимального расстояния между двумя узлами).
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
+# class Node:
+#     def __init__(self, data):
+#         self.data = data
+#         self.left = None
+#         self.right = None
+#
+# class BinaryTree:
+#     def __init__(self):
+#         self.root = None
+#
+#     def insert(self, data):
+#         new_node = Node(data)
+#         if self.root is None:
+#             self.root = new_node
+#         else:
+#             current = self.root
+#             while True:
+#                 if data < current.data:
+#                     if current.left is None:
+#                         current.left = new_node
+#                         break
+#                     else:
+#                         current = current.left
+#                 else:
+#                     if current.right is None:
+#                         current.right = new_node
+#                         break
+#                     else:
+#                         current = current.right
+#
+#     def search(self, data):
+#         current = self.root
+#         while current is not None:
+#             if data == current.data:
+#                 return True
+#             elif data < current.data:
+#                 current = current.left
+#             else:
+#                 current = current.right
+#         return False
+#
+#     def delete(self, data):
+#         if self.root is not None:
+#             self.root = self._delete(data, self.root)
+#
+#     def _delete(self, data, node):
+#         if node is None:
+#             return node
+#
+#         if data < node.data:
+#             node.left = self._delete(data, node.left)
+#         elif data > node.data:
+#             node.right = self._delete(data, node.right)
+#         else:
+#             if node.left is None:
+#                 return node.right
+#             elif node.right is None:
+#                 return node.left
+#
+#             temp = self._find_min_node(node.right)
+#             node.data = temp.data
+#             node.right = self._delete(temp.data, node.right)
+#
+#         return node
+#
+#     def _find_min_node(self, node):
+#         while node.left is not None:
+#             node = node.left
+#         return node
+#
+#     def __str__(self):
+#         return '\n'.join(self._display(self.root)[0])
+#
+#     def _display(self, node):
+#         if node.right is None and node.left is None:
+#             line = str(node.data)
+#             width = len(line)
+#             height = 1
+#             middle = width // 2
+#             return [line], width, height, middle
+#
+#         if node.right is None:
+#             lines, n, p, x = self._display(node.left)
+#             s = str(node.data)
+#             u = len(s)
+#             first_line = (x + 1)*' ' + (n - x - 1)*'_' + s
+#             second_line = x*' ' + '/' + (n - x - 1 + u)*' '
+#             shifted_lines = [line + u*' ' for line in lines]
+#             return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
+#
+#         if node.left is None:
+#             lines, n, p, x = self._display(node.right)
+#             s = str(node.data)
+#             u = len(s)
+#             first_line = s + x*'_' + (n - x)*' '
+#             second_line = (u + x)*' ' + '\\' + (n - x - 1)*' '
+#             shifted_lines = [u*' ' + line for line in lines]
+#             return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
+#
+#
+#         left, n, p, x = self._display(node.left)
+#         right, m, q, y = self._display(node.right)
+#         s = str(node.data)
+#         u = len(s)
+#         first_line = (x + 1)*' ' + (n - x - 1)*'_' + s + y*'_' + (m - y)*' '
+#         second_line = x*' ' + '/' + (n - x - 1 + u + y)*' ' + '\\' + (m - y - 1)*' '
+#         if p < q:
+#             left += [n*' ']*(q - p)
+#         elif q < p:
+#             right += [m*' ']*(p - q)
+#         zipped_lines = zip(left, right)
+#         lines = [first_line, second_line] + [a + u*' ' + b for a, b in zipped_lines]
+#         return lines, n + m + u, max(p, q) + 2, n + u // 2
+#
+#     def diameter(self):
+#         def height_and_diameter(node):
+#             if node is None:
+#                 return 0, 0
+#
+#             left_height, left_diameter = height_and_diameter(node.left)
+#             right_height, right_diameter = height_and_diameter(node.right)
+#
+#             # Height of the current node is 1 (node itself) + max height of its children
+#             height = 1 + max(left_height, right_height)
+#
+#             # диаметр дерева: диаметр левого поддерева + диаметр правого поддерева + 1
+#             diameter = left_height + right_height + 1
+#
+#             return height, diameter
+#
+#         h, diameter = height_and_diameter(self.root)
+#         return diameter
+#
+#
+#
+#
+# # Пример:
+# #        1
+# #       / \
+# #      2   3
+# #     / \
+# #    4   5
+#
+# tree = BinaryTree()
+# tree.root = Node(1)
+# tree.root.left = Node(2)
+# tree.root.right = Node(3)
+# tree.root.left.left = Node(4)
+# tree.root.left.right = Node(5)
+#
+# print(tree.diameter())
 
-class BinaryTree:
+# task 40
+# Дан массив строк. Напишите программу, которая использует двоичную кучу для сортировки массива в
+# лексикографическом порядке.
+s_l = ['abc', 'def', 'ghi', 'jkl', 'mno', 'pqr', 'stu', 'vwx', 'yz']
+class BinaryHeap:
     def __init__(self):
-        self.root = None
+        self.heapList = [0]
+        self.currentSize = 0
 
-    def insert(self, data):
-        new_node = Node(data)
-        if self.root is None:
-            self.root = new_node
+    def percUp(self, i):
+        while i // 2 > 0:
+            if self.heapList[i] < self.heapList[i // 2]:
+                tmp = self.heapList[i // 2]
+                self.heapList[i // 2] = self.heapList[i]
+                self.heapList[i] = tmp
+            i //= 2
+
+    def insert(self, k):
+        self.heapList.append(k)
+        self.currentSize = self.currentSize + 1
+        self.percUp(self.currentSize)
+
+    def percDown(self, i):
+        while (i * 2) <= self.currentSize:
+            mc = self.minChild(i)
+            if self.heapList[i] > self.heapList[mc]:
+                tmp = self.heapList[i]
+                self.heapList[i] = self.heapList[mc]
+                self.heapList[mc] = tmp
+            i = mc
+
+    def minChild(self, i):
+        if i * 2 + 1 > self.currentSize:
+            return i * 2
         else:
-            current = self.root
-            while True:
-                if data < current.data:
-                    if current.left is None:
-                        current.left = new_node
-                        break
-                    else:
-                        current = current.left
-                else:
-                    if current.right is None:
-                        current.right = new_node
-                        break
-                    else:
-                        current = current.right
-
-    def search(self, data):
-        current = self.root
-        while current is not None:
-            if data == current.data:
-                return True
-            elif data < current.data:
-                current = current.left
+            if self.heapList[i*2] < self.heapList[i*2+1]:
+                return i * 2
             else:
-                current = current.right
-        return False
+                return i * 2 + 1
 
-    def delete(self, data):
-        if self.root is not None:
-            self.root = self._delete(data, self.root)
+    def delMin(self):
+        retval = self.heapList[1]
+        self.heapList[1] = self.heapList[self.currentSize]
+        self.currentSize = self.currentSize - 1
+        self.heapList.pop()
+        self.percDown(1)
+        return retval
 
-    def _delete(self, data, node):
-        if node is None:
-            return node
-
-        if data < node.data:
-            node.left = self._delete(data, node.left)
-        elif data > node.data:
-            node.right = self._delete(data, node.right)
-        else:
-            if node.left is None:
-                return node.right
-            elif node.right is None:
-                return node.left
-
-            temp = self._find_min_node(node.right)
-            node.data = temp.data
-            node.right = self._delete(temp.data, node.right)
-
-        return node
-
-    def _find_min_node(self, node):
-        while node.left is not None:
-            node = node.left
-        return node
+    def buildHeap(self, alist):
+        i = len(alist) // 2
+        self.currentSize = len(alist)
+        self.heapList = [0] + alist[:]
+        while (i > 0):
+            self.percDown(i)
+            i -= 1
 
     def __str__(self):
-        return '\n'.join(self._display(self.root)[0])
-
-    def _display(self, node):
-        if node.right is None and node.left is None:
-            line = str(node.data)
-            width = len(line)
-            height = 1
-            middle = width // 2
-            return [line], width, height, middle
-
-        if node.right is None:
-            lines, n, p, x = self._display(node.left)
-            s = str(node.data)
-            u = len(s)
-            first_line = (x + 1)*' ' + (n - x - 1)*'_' + s
-            second_line = x*' ' + '/' + (n - x - 1 + u)*' '
-            shifted_lines = [line + u*' ' for line in lines]
-            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
-
-        if node.left is None:
-            lines, n, p, x = self._display(node.right)
-            s = str(node.data)
-            u = len(s)
-            first_line = s + x*'_' + (n - x)*' '
-            second_line = (u + x)*' ' + '\\' + (n - x - 1)*' '
-            shifted_lines = [u*' ' + line for line in lines]
-            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
+        if not self.currentSize:
+            return f'Двоичная куча пуста'
+        else:
+            heap_str = ""
+            height = int(math.log(self.currentSize, 2)) + 1
+            for i in range(0, height):
+                for j in range(2**i, min(2**(i+1), self.currentSize+1)):
+                    heap_str += str(self.heapList[j]) + " "
+                heap_str += "\n"
+            return heap_str.strip()
 
 
-        left, n, p, x = self._display(node.left)
-        right, m, q, y = self._display(node.right)
-        s = str(node.data)
-        u = len(s)
-        first_line = (x + 1)*' ' + (n - x - 1)*'_' + s + y*'_' + (m - y)*' '
-        second_line = x*' ' + '/' + (n - x - 1 + u + y)*' ' + '\\' + (m - y - 1)*' '
-        if p < q:
-            left += [n*' ']*(q - p)
-        elif q < p:
-            right += [m*' ']*(p - q)
-        zipped_lines = zip(left, right)
-        lines = [first_line, second_line] + [a + u*' ' + b for a, b in zipped_lines]
-        return lines, n + m + u, max(p, q) + 2, n + u // 2
+# создание объекта класса BinaryHeap
+bh = BinaryHeap()
 
-    def diameter(self):
-        def _height_and_diameter(node):
-            if node is None:
-                return 0, 0  # Height and diameter are both 0 for an empty tree
+# создание двочиной кучи из списка
+bh.buildHeap([9,5,6,2,3])
 
-            left_height, left_diameter = _height_and_diameter(node.left)
-            right_height, right_diameter = _height_and_diameter(node.right)
-
-            # Height of the current node is 1 (node itself) + max height of its children
-            height = 1 + max(left_height, right_height)
-
-            # Diameter can be either:
-            # 1. The diameter of the left subtree
-            # 2. The diameter of the right subtree
-            # 3. The sum of the height of the left and right subtrees + 1 (passing through the current node)
-            diameter = max(left_diameter, right_diameter, left_height + right_height + 1)
-
-            return height, diameter
-
-        _, diameter = _height_and_diameter(self.root)
-        return diameter
-
-
-
-
-# Example tree:
-#        1
-#       / \
-#      2   3
-#     / \
-#    4   5
-
-tree = BinaryTree()
-tree.root = Node(1)
-tree.root.left = Node(2)
-tree.root.right = Node(3)
-tree.root.left.left = Node(4)
-tree.root.left.right = Node(5)
-
-
-print(tree.diameter())
+# вывод двочиной кучи
+print(bh)
