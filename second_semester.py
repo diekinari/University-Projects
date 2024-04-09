@@ -4,12 +4,15 @@ import datetime
 import random as rn
 import time
 # import numpy as np
+from copy import *
 from collections import deque
 import csv
 import array
 from icecream import ic
 from functools import reduce
 
+
+# --- first part of the semester ---
 
 # task 25
 #
@@ -347,6 +350,11 @@ from functools import reduce
 #
 # print('modified matrix:')
 # print(newM)
+
+
+# --- second part of the semester ---
+
+
 # task 33
 # class Stack:
 #     def __init__(self):
@@ -1171,77 +1179,239 @@ class TwoSidedList:
 # task 40
 # Дан массив строк. Напишите программу, которая использует двоичную кучу для сортировки массива в
 # лексикографическом порядке.
-s_l = ['abc', 'def', 'ghi', 'jkl', 'mno', 'pqr', 'stu', 'vwx', 'yz']
-class BinaryHeap:
-    def __init__(self):
-        self.heapList = [0]
-        self.currentSize = 0
+# s_l = ['yz', 'stu', 'abc', 'pqr', 'ghi', 'mno', 'jkl', 'vwx', 'def']
+#
+# class MinHeap:
+#     def __init__(self):
+#         self.heap = []
+#
+#     def insert(self, value):
+#         self.heap.append(value)
+#         self._bubble_up(len(self.heap) - 1)
+#
+#     def extract_min(self):
+#         if len(self.heap) == 0:
+#             return None
+#         if len(self.heap) == 1:
+#             return self.heap.pop()
+#
+#         # top - min value
+#         min_val = self.heap[0]
+#         # put last value to first(the only way to delete 1 el correctly is pop()) and bubble it down
+#         self.heap[0] = self.heap.pop()
+#         self._bubble_down(0)
+#         # final: deleted and return min value
+#         return min_val
+#
+#     def _bubble_up(self, index):
+#         parent_index = (index - 1) // 2
+#         while parent_index >= 0 and self.heap[index] < self.heap[parent_index]:
+#             self.heap[index], self.heap[parent_index] = self.heap[parent_index], self.heap[index]
+#             index = parent_index
+#             parent_index = (index - 1) // 2
+#
+#     def _bubble_down(self, index):
+#         left_child_index = 2 * index + 1
+#         right_child_index = 2 * index + 2
+#         smallest_index = index
+#
+#         if left_child_index < len(self.heap) and self.heap[left_child_index] < self.heap[smallest_index]:
+#             smallest_index = left_child_index
+#         if right_child_index < len(self.heap) and self.heap[right_child_index] < self.heap[smallest_index]:
+#             smallest_index = right_child_index
+#
+#         if smallest_index != index:
+#             self.heap[index], self.heap[smallest_index] = self.heap[smallest_index], self.heap[index]
+#             self._bubble_down(smallest_index)
+#
+#
+# def heap_sort(arr):
+#     heap = MinHeap()
+#     for element in arr:
+#         heap.insert(element)
+#     # for i in range(len(heap.heap)):
+#     #     print(f'{heap.heap[i]}: {heap.heap[2*i + 1]}, {heap.heap[2*i + 2]}')
+#     sorted_arr = []
+#     while len(heap.heap) > 0:
+#         sorted_arr.append(heap.extract_min())
+#         # print(sorted_arr)
+#
+#     return sorted_arr
+#
+# print('Изначальный массив:', s_l)
+# sorted_arr = heap_sort(s_l)
+# print("Отсортированный массив:", sorted_arr)
 
-    def percUp(self, i):
-        while i // 2 > 0:
-            if self.heapList[i] < self.heapList[i // 2]:
-                tmp = self.heapList[i // 2]
-                self.heapList[i // 2] = self.heapList[i]
-                self.heapList[i] = tmp
-            i //= 2
+# task 41
+# а) Создать класс «Пользователь» с полями «Имя», «Фамилия», «Логин» и «Пароль».
+# Создать хеш-таблицу для хранения объектов класса «Пользователь» по ключу — логину.
+# б) Написать функцию для сортировки значений в хеш-таблице по возрастанию/убыванию.
+# в) Реализуйте хеш-таблицу для хранения информации о клиентах банка. Ключом является номер счета,
+# значение — объект, содержащий информацию о клиенте (ФИО, адрес, баланс и т.д.).
+# Используйте метод разрешения коллизий методом открытой адресации с линейным пробированием.
 
-    def insert(self, k):
-        self.heapList.append(k)
-        self.currentSize = self.currentSize + 1
-        self.percUp(self.currentSize)
+# a)
+# class User:
+#     def __init__(self, name, surname, login, password):
+#         self.name = name
+#         self.surname = surname
+#         self.login = login
+#         self.password = password
+#
+#     def __str__(self):
+#         return f'Name: {self.name}\nSurname: {self.surname}\nLogin: {self.login}\nPassword: {self.password}'
+#
+#
+# class HashTable:
+#     def __init__(self, size=10):
+#         self.size = size
+#         self.table = [[] for _ in range(self.size)]
+#
+#     def _hash(self, login):
+#         return hash(str(login)) % self.size
+#
+#     def add(self, login, person):
+#         index = self._hash(login)
+#         for item in self.table[index]:
+#             if item[0] == login:
+#                 item[1] = person
+#                 return
+#         self.table[index].append([login, person])
+#
+#     def remove(self, login):
+#         index = self._hash(login)
+#         for i, item in enumerate(self.table[index]):
+#             if item[0] == login:
+#                 del self.table[index][i]
+#                 return
+#
+#     def get(self, login):
+#         index = self._hash(login)
+#         for item in self.table[index]:
+#             if item[0] == login:
+#                 return item[1]
+#         return None
+#
+#
+# users = HashTable()
+# list_of_users = [User('Ekaterina', 'Petrova', 'ekaterina_PET', 'EK12345'),
+#                  User('Ivan', 'Sidorov', 'ivan_IV', 'IV12345'),
+#                  User('Alexey', 'Ivanov', 'alexey_IV', 'AL12345'), ]
+#
+# for user in list_of_users:
+#     users.add(user.login, user)
 
-    def percDown(self, i):
-        while (i * 2) <= self.currentSize:
-            mc = self.minChild(i)
-            if self.heapList[i] > self.heapList[mc]:
-                tmp = self.heapList[i]
-                self.heapList[i] = self.heapList[mc]
-                self.heapList[mc] = tmp
-            i = mc
 
-    def minChild(self, i):
-        if i * 2 + 1 > self.currentSize:
-            return i * 2
-        else:
-            if self.heapList[i*2] < self.heapList[i*2+1]:
-                return i * 2
-            else:
-                return i * 2 + 1
+# print(users.get('alexey_IV'))
 
-    def delMin(self):
-        retval = self.heapList[1]
-        self.heapList[1] = self.heapList[self.currentSize]
-        self.currentSize = self.currentSize - 1
-        self.heapList.pop()
-        self.percDown(1)
-        return retval
+# б)
+def sort_hash_table(hash_table, reverse=False):
+    keys = []
+    for i in range(len(hash_table.table)):
+        for j in range(len(hash_table.table[i])):
+            keys.append(hash_table.table[i][j][0])
 
-    def buildHeap(self, alist):
-        i = len(alist) // 2
-        self.currentSize = len(alist)
-        self.heapList = [0] + alist[:]
-        while (i > 0):
-            self.percDown(i)
-            i -= 1
-
-    def __str__(self):
-        if not self.currentSize:
-            return f'Двоичная куча пуста'
-        else:
-            heap_str = ""
-            height = int(math.log(self.currentSize, 2)) + 1
-            for i in range(0, height):
-                for j in range(2**i, min(2**(i+1), self.currentSize+1)):
-                    heap_str += str(self.heapList[j]) + " "
-                heap_str += "\n"
-            return heap_str.strip()
+    keys = sorted(keys, reverse=reverse)
+    new_hash_table = HashTable()
+    for key in keys:
+        new_hash_table.add(key, hash_table.get(key))
+    return new_hash_table
 
 
-# создание объекта класса BinaryHeap
-bh = BinaryHeap()
+# sorted_users = sort_hash_table(users)
 
-# создание двочиной кучи из списка
-bh.buildHeap([9,5,6,2,3])
 
-# вывод двочиной кучи
-print(bh)
+# print(sorted_users.table)
+
+# в)
+
+# class BankAccount:
+#     def __init__(self, name, surname, balance, account_number, address):
+#         self.name = name
+#         self.surname = surname
+#         self.balance = balance
+#         self.account_number = account_number
+#         self.address = address
+#
+#     def __str__(self):
+#         return (f'Name: {self.name}\nSurname: {self.surname}\nBalance: {self.balance}'
+#                 f' \nAccount number: {self.account_number}\nAddress: {self.address}')
+#
+#
+# class HashTable:
+#     def __init__(self, size):
+#         self.size = size
+#         self.keys = [None] * self.size
+#         self.values = [None] * self.size
+#
+#     def hash_function(self, key):
+#         return hash(key) % self.size
+#
+#     def add(self, key, value):
+#         hash_value = self.hash_function(key)
+#         if self.keys[hash_value] is None:
+#             self.keys[hash_value] = key
+#             self.values[hash_value] = value
+#         elif self.keys[hash_value] == key:
+#             self.values[hash_value] = value
+#         else:
+#             i = 1
+#             while True:
+#                 new_hash_value = (hash_value + i) % self.size
+#                 if self.keys[new_hash_value] is None:
+#                     self.keys[new_hash_value] = key
+#                     self.values[new_hash_value] = value
+#                     break
+#                 elif self.keys[new_hash_value] == key:
+#                     self.values[new_hash_value] = value
+#                     break
+#                 else:
+#                     i += 1
+#
+#     def get(self, key):
+#         hash_value = self.hash_function(key)
+#         if self.keys[hash_value] == key:
+#             return self.values[hash_value]
+#         else:
+#             i = 1
+#             while True:
+#                 new_hash_value = (hash_value + i * self.double_hash_function(key)) % self.size
+#                 if self.keys[new_hash_value] == key:
+#                     return self.values[new_hash_value]
+#                 elif self.keys[new_hash_value] is None:
+#                     return None
+#                 else:
+#                     i += 1
+#
+#     def remove(self, key):
+#         hash_value = self.hash_function(key)
+#         if self.keys[hash_value] == key:
+#             self.keys[hash_value] = None
+#             self.values[hash_value] = None
+#         else:
+#             i = 1
+#             while True:
+#                 new_hash_value = (hash_value + i * self.double_hash_function(key)) % self.size
+#                 if self.keys[new_hash_value] == key:
+#                     self.keys[new_hash_value] = None
+#                     self.values[new_hash_value] = None
+#                     break
+#                 elif self.keys[new_hash_value] is None:
+#                     break
+#                 else:
+#                     i += 1
+#
+#
+# bank_clients = HashTable(20)
+# list_of_clients = [BankAccount('Alexey', 'Ivanov', 10000, 'AL12345', 'Moscow'),
+#                    BankAccount('Ekaterina', 'Petrova', 20000, 'EK12345', 'Saint Petersburg'),
+#                    BankAccount('Ivan', 'Sidorov', 30000, 'IV12345', 'Novosibirsk'),
+#                    BankAccount('Maria', 'Ivanova', 40000, 'MA12345', 'Yekaterinburg'),
+#                    BankAccount('Dmitry', 'Ivanov', 50000, 'DM12345', 'Kazan'),
+#                    BankAccount('Anna', 'Petrova', 60000, 'AN12345', 'Omsk'),
+#                    BankAccount('Pavel', 'Sidorov', 70000, 'PA12345', 'Chelyabinsk'),
+#                    BankAccount('Olga', 'Ivanova', 80000, 'OL12345', 'Samara')]
+# for client in list_of_clients:
+#     bank_clients.add(client.account_number, client)
+
+# print(bank_clients.get('AL12345'))
