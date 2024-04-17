@@ -493,169 +493,140 @@ class Node:
 #         return self.size
 #
 #
-# # class TwoSidedNode(Node):
-# #     def __init__(self, data):
-# #         super().__init__(data)
-# #         self.next = None
-# #         self.prev = None
+# class TwoSidedNode(Node):
+#     def __init__(self, data):
+#         super().__init__(data)
+#         self.next = None
+#         self.prev = None
 #
 #
-# # class TwoSidedQueue:
-# #     def __init__(self):
-# #         self.front = None
-# #         self.rear = None
-# #         self.size = 0
-# #
-# #     def is_empty(self):
-# #         return self.size == 0
-# #
-# #     def enqueue(self, item):  # adding to an end
-# #         new_node = TwoSidedNode(item)
-# #         if self.is_empty():
-# #             self.front = new_node
-# #             self.rear = new_node
-# #             self.front.prev = self.rear
-# #             self.rear.next = self.front
-# #         else:
-# #             self.rear.prev = new_node
-# #             new_node.front = self.rear
-# #             self.rear = new_node
-# #         self.size += 1
-# #
-# #     def startEnqueue(self, item):  # adding to the beginning
-# #         new_node = TwoSidedNode(item)
-# #         if self.is_empty():
-# #             self.front = new_node
-# #             self.rear = new_node
-# #             self.front.prev = self.rear
-# #             self.rear.next = self.front
-# #         else:
-# #             self.front.next = new_node
-# #             new_node.prev = self.front
-# #             self.front = new_node
-# #         self.size += 1
-# #
-# #     def dequeue(self):  # deleting from the beginning
-# #         if self.is_empty():
-# #             return None
-# #         else:
-# #             item = self.front.data
-# #             if self.front.prev is not None:
-# #                 self.front.prev.next = None
-# #             self.front = self.front.prev
-# #             self.size -= 1
-# #             if self.is_empty():
-# #                 self.rear = None
-# #             return item
-# #
-# #     def endDequeue(self):  # deleting from the end
-# #         if self.is_empty():
-# #             return None
-# #         else:
-# #             item = self.rear.data
-# #             self.rear = self.rear.next
-# #
-# #             self.size -= 1
-# #             if self.is_empty():
-# #                 self.front = None
-# #             return item
-# #
-# #     def peek(self):
-# #         if self.is_empty():
-# #             return None
-# #         else:
-# #             return self.front.data
-# #
-# #     def size(self):
-# #         return self.size
-#
-# # t_q = TwoSidedQueue()
-# # # add to end
-# # t_q.enqueue(1)
-# # t_q.enqueue(2)
-# # t_q.enqueue(3)
-# # t_q.enqueue(4)
-# # t_q.enqueue(5)
-# # ic(t_q.peek())
-# #
-# # # delete 1 at start
-# # ic(t_q.dequeue())
-# # # add 10 to start
-# # t_q.startEnqueue(10)
-# # ic(t_q.peek())
-# # # delete 10
-# # t_q.dequeue()
-# # # show next start
-# # ic(t_q.peek())
-# #
-# # # delete 5 at end
-# # ic(t_q.endDequeue())
 
-# # Создать класс двусторонней очереди, который будет поддерживать операции добавления элемента в начало и конец очереди,
-# # удаления элемента из начала и конца очереди, а также удаления минимального и максимального элементов из очереди.
-# class DoubleEndedQueue:
+# Создать класс двусторонней очереди, который будет поддерживать операции добавления элемента в начало и конец очереди,
+# удаления элемента из начала и конца очереди, а также удаления минимального и максимального элементов из очереди.
+
+# class TwoSidedQueue:
 #     def __init__(self):
-#         self.queue = []
-#
-#     def add_front(self, item):
-#         self.queue.insert(0, item)
-#
-#     def add_rear(self, item):
-#         self.queue.append(item)
-#
-#     def remove_front(self):
-#         if self.is_empty():
-#             return None
-#         return self.queue.pop(0)
-#
-#     def remove_rear(self):
-#         if self.is_empty():
-#             return None
-#         return self.queue.pop()
-#
-#     def remove_min(self):
-#         if self.is_empty():
-#             return None
-#         min_val = min(self.queue)
-#         self.queue.remove(min_val)
-#         return min_val
-#
-#     def remove_max(self):
-#         if self.is_empty():
-#             return None
-#         max_val = max(self.queue)
-#         self.queue.remove(max_val)
-#         return max_val
+#         self.front = None
+#         self.rear = None
+#         self.size = 0
 #
 #     def is_empty(self):
-#         return len(self.queue) == 0
+#         return self.size == 0
+#
+#     def enqueue(self, item):  # adding to an end
+#         new_node = TwoSidedNode(item)
+#         if self.is_empty():
+#             self.front = new_node
+#             self.rear = new_node
+#             self.front.prev = self.rear
+#             self.rear.next = self.front
+#         else:
+#             self.rear.prev = new_node
+#             new_node.next = self.rear
+#             self.rear = new_node
+#         self.size += 1
+#
+#     def startEnqueue(self, item):  # adding to the beginning
+#         new_node = TwoSidedNode(item)
+#         if self.is_empty():
+#             self.front = new_node
+#             self.rear = new_node
+#             self.front.prev = self.rear
+#             self.rear.next = self.front
+#         else:
+#             self.front.next = new_node
+#             new_node.prev = self.front
+#             self.front = new_node
+#         self.size += 1
+#
+#     def dequeue(self):  # deleting from the beginning
+#         if self.is_empty():
+#             return None
+#         else:
+#             item = self.front.data
+#             if self.front.prev is not None:
+#                 self.front.prev.next = None
+#             self.front = self.front.prev
+#             self.size -= 1
+#             if self.is_empty():
+#                 self.rear = None
+#             return item
+#
+#     def endDequeue(self):  # deleting from the end
+#         if self.is_empty():
+#             return None
+#         else:
+#             item = self.rear.data
+#             if self.rear.next is not None:
+#                 self.rear.next.prev = None
+#             self.rear = self.rear.next
+#             self.size -= 1
+#             if self.is_empty():
+#                 self.front = None
+#             return item
+#
+#     def peek(self):
+#         if self.is_empty():
+#             return None
+#         else:
+#             return self.front.data
+#
+#     def find_max_value(self, reverse=False):
+#         if self.is_empty():
+#             return None
+#         else:
+#             value = self.front.data
+#             current = self.front
+#             while current is not None:
+#                 if reverse:
+#                     if current.data < value:
+#                         value = current.data
+#                 else:
+#                     if current.data > value:
+#                         value = current.data
+#                 current = current.prev
+#             return value
+#
+#     def show(self):
+#         if self.is_empty():
+#             return None
+#         else:
+#             result = []
+#             current = self.front
+#             while current is not None:
+#                 result.append(current.data)
+#                 current = current.prev
+#             return result
+#
 #
 #     def size(self):
-#         return len(self.queue)
+#         return self.size
 #
+# t_q = TwoSidedQueue()
+# # add to end
+# t_q.enqueue(1)
+# t_q.enqueue(2)
+# t_q.enqueue(3)
+# t_q.enqueue(4)
+# t_q.enqueue(5)
+# ic(t_q.peek())
 #
-# deque = DoubleEndedQueue()
-# deque.add_front(10)
-# deque.add_rear(20)
-# deque.add_front(5)
+# # delete 1 at start [2,3,4,5]
+# ic(t_q.dequeue())
+# # add 10 to start [10,2,3,4,5]
+# t_q.startEnqueue(10)
+# ic(t_q.peek())
+# # delete 10 [2,3,4,5]
+# t_q.dequeue()
+# # show next start
+# ic(t_q.peek())
 #
-# print("Size:", deque.size())
-# print("Deque:", deque.queue)
-# print("Removed front:", deque.remove_front())
-# print("Removed rear:", deque.remove_rear())
-# print("New size:", deque.size())
+# # delete 5 at end [2,3,4]
+# ic(t_q.endDequeue())
+# ic(t_q.show())
 #
-# deque.add_rear(30)
-# deque.add_front(2)
-# deque.add_rear(25)
-#
-# print("Deque:", deque.queue)
-# print("Removed min:", deque.remove_min())
-# print("Removed max:", deque.remove_max())
-# print("Updated deque:", deque.queue)
-
-
-
+# ic(t_q.find_max_value())
+# ic(t_q.find_max_value(reverse=True))
 
 
 # task 35
@@ -777,20 +748,24 @@ class TwoSidedList:
 #         current = current.next
 #
 #     current = l2.rear
+#     result = []
 #     for i in range(l2.size):
 #         if current.data in visited:
-#             return current.data
+#             result.append(current.data)
 #         current = current.next
-#
-#     return None
-#
-#
+#     if len(result) > 0:
+#         return sorted(result)
+#     else:
+#         return None
+
+
 # list1 = TwoSidedList()
 # # list1 = [1, 2, 3, 4]
 # list1.add_end(1)
 # list1.add_end(2)
 # list1.add_end(3)
 # list1.add_end(4)
+# list1.add_end(5)
 #
 # # list2 =  [4, 5, 6, 7]
 # list2 = TwoSidedList()
@@ -898,14 +873,17 @@ class TwoSidedList:
 #
 #     def size(self):
 #         return self.size
-#
-#
+
+
 # list1 = CycleTwoSidedList()
 # list1.add_end(1)
 # list1.add_end(2)
 # list1.add_end(3)
 # list1.add_end(4)
-# list1.add_at_position('item', 5)
+# # list1 = [1, 2, 3, 4]
+# list1.add_at_position('item', 3)
+# # list1 = [ 1, 2, 3, 4, 'item']
+#
 # print(list1.peek(), list1.front.next.data)
 
 # task 38
@@ -1033,7 +1011,7 @@ class TwoSidedList:
 # print('\n' + '---', end='')
 # methods = ['1', '2', '3']
 # for m in methods:
-#     for el in sort(read_list_of_people, method=m):
+#     for el in sort(read_list_of_people, method=m, reverse=True):
 #         print(el.age, end=' ')
 
 # task 39
@@ -1161,7 +1139,7 @@ class TwoSidedList:
 #             left_height, left_diameter = height_and_diameter(node.left)
 #             right_height, right_diameter = height_and_diameter(node.right)
 #
-#             # Height of the current node is 1 (node itself) + max height of its children
+#             # длина текущего узла = 1 (сам узел) + максимальная высота поддерева
 #             height = 1 + max(left_height, right_height)
 #
 #             # диаметр дерева: диаметр левого поддерева + диаметр правого поддерева + 1
@@ -1172,16 +1150,16 @@ class TwoSidedList:
 #         h, diameter = height_and_diameter(self.root)
 #         return diameter
 #
-#
-#
-#
-# # Пример:
-# #        1
-# #       / \
-# #      2   3
-# #     / \
-# #    4   5
-#
+# #
+# #
+# #
+# # # Пример:
+# # #        1
+# # #       / \
+# # #      2   3
+# # #     / \
+# # #    4   5
+# #
 # tree = BinaryTree()
 # tree.root = Node(1)
 # tree.root.left = Node(2)
@@ -1275,8 +1253,8 @@ class TwoSidedList:
 #
 #     def __str__(self):
 #         return f'Name: {self.name}\nSurname: {self.surname}\nLogin: {self.login}\nPassword: {self.password}'
-#
-#
+
+
 # class HashTable:
 #     def __init__(self, size=10):
 #         self.size = size
@@ -1315,31 +1293,31 @@ class TwoSidedList:
 #
 # for user in list_of_users:
 #     users.add(user.login, user)
-
-
-# print(users.get('alexey_IV'))
-
-# б)
-def sort_hash_table(hash_table, reverse=False):
-    keys = []
-    for i in range(len(hash_table.table)):
-        for j in range(len(hash_table.table[i])):
-            keys.append(hash_table.table[i][j][0])
-
-    keys = sorted(keys, reverse=reverse)
-    new_hash_table = HashTable()
-    for key in keys:
-        new_hash_table.add(key, hash_table.get(key))
-    return new_hash_table
-
-
-# sorted_users = sort_hash_table(users)
-
-
-# print(sorted_users.table)
-
-# в)
-
+# #
+# #
+# # print(users.get('alexey_IV'))
+#
+# # б)
+# # def sort_hash_table(hash_table, reverse=False):
+# #     keys = []
+# #     for i in range(len(hash_table.table)):
+# #         for j in range(len(hash_table.table[i])):
+# #             keys.append(hash_table.table[i][j][0])
+# #
+# #     keys = sorted(keys, reverse=reverse)
+# #     new_hash_table = HashTable()
+# #     for key in keys:
+# #         new_hash_table.add(key, hash_table.get(key))
+# #     return new_hash_table
+# #
+# #
+# # sorted_users = sort_hash_table(users)
+#
+#
+# # print(sorted_users.table)
+#
+# # в)
+#
 # class BankAccount:
 #     def __init__(self, name, surname, balance, account_number, address):
 #         self.name = name
@@ -1428,5 +1406,5 @@ def sort_hash_table(hash_table, reverse=False):
 #                    BankAccount('Olga', 'Ivanova', 80000, 'OL12345', 'Samara')]
 # for client in list_of_clients:
 #     bank_clients.add(client.account_number, client)
-
+#
 # print(bank_clients.get('AL12345'))
