@@ -360,7 +360,7 @@ from functools import reduce
 #     def __init__(self):
 #         self.items = []
 #
-#     def isEmpty(self):
+#     def is_empty(self):
 #         return self.items == []
 #
 #     def push(self, item):
@@ -380,10 +380,10 @@ class Node:
     def __init__(self, data):
         self.data = data
         self.next = None
-
-
 #
 #
+# #
+# #
 # class Stack2:
 #     def __init__(self):
 #         self.top = None
@@ -418,8 +418,9 @@ class Node:
 #     def size(self):
 #         return self.size
 #
-#
+# #
 # s = Stack2()
+# # s = Stack()
 # word = 'топот'
 # for letter in word:
 #     s.push(letter)
@@ -492,8 +493,6 @@ class Node:
 #         return self.size
 #
 #
-# # Создать класс двусторонней очереди, который будет поддерживать операции добавления элемента в начало и конец очереди,
-# # удаления элемента из начала и конца очереди, а также удаления минимального и максимального элементов из очереди.
 # # class TwoSidedNode(Node):
 # #     def __init__(self, data):
 # #         super().__init__(data)
@@ -591,7 +590,9 @@ class Node:
 # #
 # # # delete 5 at end
 # # ic(t_q.endDequeue())
-#
+
+# # Создать класс двусторонней очереди, который будет поддерживать операции добавления элемента в начало и конец очереди,
+# # удаления элемента из начала и конца очереди, а также удаления минимального и максимального элементов из очереди.
 # class DoubleEndedQueue:
 #     def __init__(self):
 #         self.queue = []
@@ -638,19 +639,24 @@ class Node:
 # deque.add_rear(20)
 # deque.add_front(5)
 #
-# print("Size of deque:", deque.size())
-# print("Removed from front:", deque.remove_front())
-# print("Removed from rear:", deque.remove_rear())
-# print("Size of deque after removals:", deque.size())
+# print("Size:", deque.size())
+# print("Deque:", deque.queue)
+# print("Removed front:", deque.remove_front())
+# print("Removed rear:", deque.remove_rear())
+# print("New size:", deque.size())
 #
 # deque.add_rear(30)
 # deque.add_front(2)
 # deque.add_rear(25)
 #
 # print("Deque:", deque.queue)
-# print("Removed min value:", deque.remove_min())
-# print("Removed max value:", deque.remove_max())
-# print("Deque after min and max removals:", deque.queue)
+# print("Removed min:", deque.remove_min())
+# print("Removed max:", deque.remove_max())
+# print("Updated deque:", deque.queue)
+
+
+
+
 
 # task 35
 # Создайте двусвязный список для хранения информации о задачах в проекте по разработке программного обеспечения.
@@ -746,11 +752,18 @@ class TwoSidedList:
         return self.size
 
 
-#
+
+
 # tq = TwoSidedList()
 # tq.add_end(DevelopingTask('website', 'desc1', '01-03-24', '05-03-24', ['Mark', 'John']))
 # tq.add_end(DevelopingTask('server side', 'desc2', '20-03-24', '30-03-24', ['Mark', 'Alex']))
 # print(tq.size)
+# print(tq.peek())
+# print('---')
+# tq.del_start()
+# print(tq.peek())
+# print('---')
+# tq.del_end()
 # print(tq.peek())
 
 # task 36
@@ -758,13 +771,13 @@ class TwoSidedList:
 #     visited = {}
 #     current = l1.rear
 #
+#     # visited = {'some_data': True, 'some_other_data': True}
 #     for i in range(l1.size):
 #         visited[current.data] = True
 #         current = current.next
 #
 #     current = l2.rear
 #     for i in range(l2.size):
-#
 #         if current.data in visited:
 #             return current.data
 #         current = current.next
@@ -773,11 +786,13 @@ class TwoSidedList:
 #
 #
 # list1 = TwoSidedList()
+# # list1 = [1, 2, 3, 4]
 # list1.add_end(1)
 # list1.add_end(2)
 # list1.add_end(3)
 # list1.add_end(4)
 #
+# # list2 =  [4, 5, 6, 7]
 # list2 = TwoSidedList()
 # list2.add_end(4)
 # list2.add_end(5)
@@ -890,8 +905,8 @@ class TwoSidedList:
 # list1.add_end(2)
 # list1.add_end(3)
 # list1.add_end(4)
-# list1.add_at_position(999, 2)
-# print(list1.front.data, list1.front.prev.data)
+# list1.add_at_position('item', 5)
+# print(list1.peek(), list1.front.next.data)
 
 # task 38
 
