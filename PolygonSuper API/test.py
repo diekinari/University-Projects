@@ -7,7 +7,8 @@ from polygonSuper import *
 
 
 # task 2
-gen_rectangle(100)
+# gen_rectangle(100)
 # gen_triangle(100, 1)
 # gen_hexagon(100, 0.5
 # random_figures()
+generate_random_figures()
