@@ -95,6 +95,8 @@ from polygonSuper import *
 
 # -- graphic 4 --
 # first_el = gen_rectangle(1, (3, 2.5, 0.5, 3.5), False)
-# visualize_polygons(first_el)
-# TODO
-#  finish 4th task by fixing the `gen_rectangle` function via GTP
+# first_el = gen_re(1,angles=(60, 180, 120, 120), visualize=False)
+first_el = gen_trapezoid(1, side_lengths=(4, 3, 3, 3), angles=(120, 120), visualize=False)
+second_el = gen_trapezoid(1, side_lengths=(8, 6, 4, 6), angles=(120, 120), start_x=5, visualize=False)
+visualize_polygons(map(lambda polygon: tr_rotate(polygon, 90),
+                       tuple(gen_trapezoid(1, side_lengths=(4, 3, 3, 3), angles=(120, 120), visualize=False))))

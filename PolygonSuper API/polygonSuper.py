@@ -99,42 +99,53 @@ def gen_rectangle(limit=50, side_lengths=(1, 1, 1, 1), visualize=True):
         return polygons_list
 
 
-def gen_r(limit=50, side_lengths=(1, 1, 1, 1), angles=(90, 90, 90, 90), visualize=True):
+def gen_trapezoid(limit=50, side_lengths=(1, 1, 1, 1), angles=(90, 90), start_x=0, visualize=True):
     """
-    Генерация последовательности четырехугольников.
+    Генерация последовательности трапеций.
 
     Аргументы:
-    limit: Максимальное количество четырехугольников.
-    side_lengths: Длины сторон четырехугольника. Представлены в виде кортежа (a, b, c, d), где
-                  a - длина первой стороны, b - длина второй стороны, и так далее.
-    angles: Углы четырехугольника в градусах. Представлены в виде кортежа (A, B, C, D), где
-            A - угол между первой и второй стороной, B - угол между второй и третьей стороной, и так далее.
-    visualize: Флаг для визуализации. Если True, будет отображена визуализация, иначе будет возвращен список координат.
+    limit: Максимальное количество трапеций.
+    side_lengths: Длины сторон трапеции. Представлены в виде кортежа (a, b, c, d),
+                  где a - длина нижнего основания, b - длина левой стороны, c - длина верхнего основания, d - длина правой стороны.
+    angles: Углы при нижнем основании трапеции в градусах. Представлены в виде кортежа (A, B),
+            где A - угол при левом нижнем углу, B - угол при правом нижнем углу.
+    start_x: Начальная координата по оси X для генерации трапеций.
+    visualize: Флаг для визуализации. Если True, будет отображена визуализация,
+               иначе будет возвращен список координат.
 
     Возвращает:
-    Если visualize равен True, отображает визуализацию четырехугольников. В противном случае возвращает список координат четырехугольников.
+    Если visualize равен True, отображает визуализацию трапеций.
+    В противном случае возвращает список координат трапеций.
     """
-    counter = itertools.islice(itertools.count(start=0, step=1), limit)
-    polygons_list = []
-    iterator = 0
-
-    for x in counter:
-        x_coord = x + iterator
+    counter = itertools.islice(itertools.count(start=start_x, step=1), limit)
+    trapezoids_list = []
+    iterator = start_x
+    for _ in counter:
+        x_coord = iterator
         y_coord = 0
 
         p1 = (x_coord, y_coord)
+        p2 = (x_coord + side_lengths[0], y_coord)
 
-        p2 = (p1[0] + math.cos(math.radians(angles[0])) * 1, p1[1] + math.sin(math.radians(angles[0])) * 1)
-        p3 = (p2[0] + math.cos(math.radians(angles[1])) * 1, p2[1] + math.sin(math.radians(angles[1])) * 1)
-        p4 = (p3[0] + math.cos(math.radians(angles[2])) * 1, p3[1] + math.sin(math.radians(angles[2])) * 1)
+        # Расчет координат для верхнего левого угла трапеции
+        delta_x_b = math.cos(math.radians(180 - angles[0])) * side_lengths[1]
+        delta_y_b = math.sin(math.radians(180 - angles[0])) * side_lengths[1]
+        p3 = (p1[0] + delta_x_b, p1[1] + delta_y_b)
 
-        polygons_list.append((p1, p2, p3, p4))
-        iterator += max(side_lengths) + 0.5  # Добавляем небольшой отступ между четырехугольниками
+        # Расчет координат для верхнего правого угла трапеции
+        delta_x_d = math.cos(math.radians(angles[1])) * side_lengths[3]
+        delta_y_d = math.sin(math.radians(angles[1])) * side_lengths[3]
+        p4 = (p2[0] + delta_x_d, p2[1] + delta_y_d)
+
+        trapezoids_list.append((p1, p2, p4, p3))
+
+        # Расчет следующей стартовой позиции
+        iterator += side_lengths[0] + max(delta_x_b, delta_x_d) + 0.5  # Добавляем небольшой отступ между трапециями
 
     if visualize:
-        visualize_polygons(polygons_list)
+        visualize_polygons(trapezoids_list)
     else:
-        return polygons_list
+        return trapezoids_list
 
 
 def gen_triangle(limit=50, side_length=1, vizualize=True):
