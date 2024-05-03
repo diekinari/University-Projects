@@ -1,5 +1,6 @@
 from polygonSuper import *
 
+
 # task 1
 # polygons_iterator = [((0, 0), (1, 0), (1, 1)), ((1, 1), (2, 1), (2, 2)), ((2, 2), (3, 2), (3, 3)),
 #                      ((0, 3), (1, 2), (0, 2)), ((1, 2), (2, 1), (1, 1)), ((2, 1), (3, 0), (2, 0))]
@@ -94,9 +95,33 @@ from polygonSuper import *
 # visualize_polygons(tuple(topline) + tuple(bottomline))
 
 # -- graphic 4 --
-# first_el = gen_rectangle(1, (3, 2.5, 0.5, 3.5), False)
-# first_el = gen_re(1,angles=(60, 180, 120, 120), visualize=False)
-first_el = gen_trapezoid(1, side_lengths=(4, 3, 3, 3), angles=(120, 120), visualize=False)
-second_el = gen_trapezoid(1, side_lengths=(8, 6, 4, 6), angles=(120, 120), start_x=5, visualize=False)
-visualize_polygons(map(lambda polygon: tr_rotate(polygon, 90),
-                       tuple(gen_trapezoid(1, side_lengths=(4, 3, 3, 3), angles=(120, 120), visualize=False))))
+
+# def rotate(element, angle):
+#     return tuple(map(lambda polygon: tr_rotate(polygon, angle), tuple(element)))
+#
+#
+# def move(element, vector):
+#     return tuple(map(lambda polygon: tr_translate(polygon, vector), tuple(element)))
+#
+#
+# def sym(element, axis):
+#     return tuple(map(lambda polygon: tr_symmetry(polygon, axis), tuple(element)))
+#
+#
+# polygons = []
+# first_el = gen_trapezoid(1, side_lengths=(1.5, 1.2, 1.5, 1.2), angles=(120, 120), visualize=False)
+# second_el = gen_trapezoid(1, side_lengths=(2.9, 1.25, 2.9, 1.25), angles=(120, 120), start_x=5, visualize=False)
+# third_el = gen_trapezoid(1, side_lengths=(4.9, 1.8, 4.9, 1.8), angles=(120, 120), start_x=10, visualize=False)
+# fourth_el = gen_trapezoid(1, side_lengths=(6.9, 1.9, 6.9, 1.9), angles=(120, 120), start_x=10, visualize=False)
+#
+# polygons.append(rotate(move(move(rotate(first_el, 90), (2.6, 0))
+#                             + move(rotate(second_el, 90), (4, -5.7))
+#                             + move(rotate(third_el, 90), (6, -11.7))
+#                             + move(rotate(fourth_el, 90), (8.1, -12.7)),
+#                             (-1.2, -0.8)), 45))
+#
+# polygons.append(sym(sym(polygons[0], axis='y'), axis='x'))
+#
+# visualize_polygons(polygons[0] + polygons[1])
+
+
