@@ -96,16 +96,18 @@ from polygonSuper import *
 
 # -- graphic 4 --
 
-# def rotate(element, angle):
-#     return tuple(map(lambda polygon: tr_rotate(polygon, angle), tuple(element)))
-#
-#
-# def move(element, vector):
-#     return tuple(map(lambda polygon: tr_translate(polygon, vector), tuple(element)))
-#
-#
-# def sym(element, axis):
-#     return tuple(map(lambda polygon: tr_symmetry(polygon, axis), tuple(element)))
+def rotate(element, angle):
+    return tuple(map(lambda polygon: tr_rotate(polygon, angle), tuple(element)))
+
+
+def move(element, vector):
+    return tuple(map(lambda polygon: tr_translate(polygon, vector), tuple(element)))
+
+
+def sym(element, axis):
+    return tuple(map(lambda polygon: tr_symmetry(polygon, axis), tuple(element)))
+
+
 #
 #
 # polygons = []
@@ -124,4 +126,10 @@ from polygonSuper import *
 #
 # visualize_polygons(polygons[0] + polygons[1])
 
-
+# task 5
+rects = gen_rectangle(3, (2, 1, 1, 2), False)
+rects2 = gen_trapezoid(2, (1, 5, 10, 5), (120, 120), visualize=False)
+polygons = move(rects, (6, 0)) + tuple(rects2)
+filtered = filter(is_convex, polygons)
+visualize_polygons(polygons)
+visualize_polygons(list(filtered))

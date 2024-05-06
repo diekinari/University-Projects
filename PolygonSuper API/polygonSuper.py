@@ -319,3 +319,44 @@ def tr_homothety(polygon, scale_factor=5):
         homothetic_polygon.append(homothetic_point)
 
     return tuple(homothetic_polygon)
+
+
+def is_convex(polygon):
+    """
+    Проверяет, является ли многоугольник выпуклым.
+
+    Аргументы:
+    polygon: Многоугольник, представленный в виде списка вершин.
+
+    Возвращает:
+    True, если многоугольник выпуклый, иначе False.
+    """
+    if len(polygon) < 3:
+        return False
+
+    def cross_product_orientation(point1, point2, point3):
+        """
+        !NEEDS TO BE REFACTORED!
+        Возвращает положительное значение, если точки образуют левый поворот,
+        отрицательное для правого поворота, и 0, если точки коллинеарны.
+        """
+        return (point2[0] - point1[0]) * (point3[1] - point1[1]) - (point2[1] - point1[1]) * (point3[0] - point1[0])
+
+    # Знак первого векторного произведения
+    sign = None
+    for i in range(len(polygon)):
+        # Зацикливающиеся в рамках длины полигона индексы
+        p1 = polygon[i]
+        p2 = polygon[(i + 1) % len(polygon)]
+        p3 = polygon[(i + 2) % len(polygon)]
+        cp = cross_product_orientation(p1, p2, p3)
+
+        if cp != 0:
+            if sign is None:
+                # Если первым вектором не выяснялся знак, то определяем его
+                sign = cp > 0
+            # Если знак не совпадает с знаком первого вектора, то многоугольник не выпуклый был поворот в друную сторону
+            elif (cp > 0) != sign:
+                return False
+
+    return True
