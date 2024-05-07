@@ -127,9 +127,44 @@ def sym(element, axis):
 # visualize_polygons(polygons[0] + polygons[1])
 
 # task 5
-rects = gen_rectangle(3, (2, 1, 1, 2), False)
-rects2 = gen_trapezoid(2, (1, 5, 10, 5), (120, 120), visualize=False)
-polygons = move(rects, (6, 0)) + tuple(rects2)
-filtered = filter(is_convex, polygons)
-visualize_polygons(polygons)
-visualize_polygons(list(filtered))
+
+# 5.1 "многоугольник является выпуклым"
+# rects = gen_rectangle(3, (2, 1, 1, 2), False)
+# rects2 = gen_trapezoid(2, (1, 5, 10, 5), (120, 120), visualize=False)
+# polygons = move(rects, (6, 0)) + tuple(rects2)
+# filtered = filter(flt_convex_polygon, polygons)
+# visualize_polygons(polygons)
+# visualize_polygons(list(filtered))
+
+# 5.2 "хотя бы один угол(любая вершина) совпадает с заданным значением"
+# polygons = [
+#     [(0, 0), (1, 0), (1, 1), (0, 1)],  # rect
+#     [(2, 2), (3, 2), (3, 3), (2, 3)],  # rect
+#     [(0, 0), (2, 2), (0, 2)]           # triangle
+# ]
+#
+# filtered = list(filter(lambda polygon: flt_angle_point((0, 0), polygon), polygons))
+# visualize_polygons(polygons)
+# visualize_polygons(filtered)
+
+# 5.3 "площадь меньше, чем заданное значение"
+# rects = gen_rectangle(3, (1, 1, 1, 1), False)  # square = 1*1
+# rects2 = move(gen_rectangle(2, (2, 2, 2, 2), False), (7, 0))  # square = 2*2
+# polygons = tuple(rects) + tuple(rects2)
+# visualize_polygons(polygons)
+# filtered = list(filter(lambda polygon: flt_square(3, polygon), polygons))
+# visualize_polygons(filtered)
+
+# 5.4 "кратчайшая сторона меньше, чем заданное значение"
+# rects = gen_rectangle(2, (4, 3, 4, 3), False)  # min side - 3
+# rects2 = move(gen_rectangle(2, (1, 5, 1, 5), False), (-8, 0))  # min side - 1
+# rects3 = move(gen_rectangle(2, (2, 3, 2, 3), False), (7, 0))  # min side - 2
+# polygons = tuple(rects) + tuple(rects2) + tuple(rects3)
+# visualize_polygons(polygons)
+#
+# filtered = list(filter(lambda polygon: flt_shortest_side(3, polygon), polygons))
+# visualize_polygons(filtered)
+
+# 5.5 "выпуклый многоугольник содержит заданную точку"
+pol = gen_hexagon(3, 1, False)
+visualize_polygons(pol)
