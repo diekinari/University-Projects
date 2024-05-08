@@ -405,7 +405,7 @@ def flt_square(area, polygon):
         num_points = len(actual_polygon)
         actual_area = 0.0
         for i in range(num_points):
-            j = (i + 1) % num_points # Индекс следующей вершины
+            j = (i + 1) % num_points  # Индекс следующей вершины
             actual_area += actual_polygon[i][0] * actual_polygon[j][1]
             actual_area -= actual_polygon[j][0] * actual_polygon[i][1]
         actual_area = abs(actual_area) / 2
@@ -440,3 +440,29 @@ def flt_shortest_side(side_length, polygon):
             shortest_side = side
 
     return shortest_side < side_length
+
+
+def flt_point_inside(point, polygon):
+    def point_in_polygon():
+        """
+        Проверяет, содержится ли точка в многоугольнике через метод трассировки луча
+
+        Аргументы:
+        point: Точка, в виде кортежа координат
+        polygon: Многоугольник, в виде списка вершин
+
+        Возвращает:
+        True, если точка находится внутри многоугольника, иначе False
+        """
+        intersections_count = 0
+        for i in range(len(polygon)):
+            j = (i + 1) % len(polygon)
+            # Находится ли точка между вершинами по вертикали
+            # И правее ли находится точка на ребре с той-же y-координатой (формула линейной интерполяции)
+            if ((polygon[i][1] > point[1]) != (polygon[j][1] > point[1])) and \
+                    (point[0] < (polygon[j][0] - polygon[i][0]) * (point[1] - polygon[i][1]) / (
+                            polygon[j][1] - polygon[i][1]) + polygon[i][0]):
+                intersections_count += 1
+        return intersections_count % 2 == 1
+
+    return flt_convex_polygon(polygon) and point_in_polygon()

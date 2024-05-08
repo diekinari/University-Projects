@@ -166,5 +166,13 @@ def sym(element, axis):
 # visualize_polygons(filtered)
 
 # 5.5 "выпуклый многоугольник содержит заданную точку"
-pol = gen_hexagon(3, 1, False)
-visualize_polygons(pol)
+# polygons = [
+#     [(-1, 0), (-5, 0), (-5, 5), (-1, 5)], # квадрат – выпуклый – не содержит – не подходит
+#     [(0, 0), (5, 0), (5, 5), (0, 5)],  # квадрат – выпуклый – содержит – подходит
+#     [(0, 0), (5, 0), (2.5, 5)],  # треугольник – выпуклый – содержит - подходит
+#     [(0, 0), (3, 0), (3, 3), (0, 3), (1, 1)],  # невыпуклый многоугольник – не подходит
+# ]
+# point = (2, 2)  # Точка для проверки
+# filtered = list(filter(lambda polygon: flt_point_inside(point, polygon), polygons))
+# visualize_polygons(polygons)
+# visualize_polygons(filtered)
