@@ -37,33 +37,6 @@ def visualize_polygons(polygons_iterator):
     plt.show()
 
 
-# def gen_rectangle(limit=50, vizualize=True):
-#     counter = itertools.islice(itertools.count(start=0, step=1), limit)
-#     polygons_list = []
-#     iterator = 0
-#     for x in counter:
-#         p = (x + iterator, 0)
-#         temp_l = []
-#         for y in range(4):
-#             if y == 0:
-#                 temp_l.append(p)
-#             elif y == 1:
-#                 temp_l.append((p[0], p[1] + 0.5))
-#             elif y == 2:
-#                 temp_l.append((p[0] + 1, p[1] + 0.5))
-#             else:
-#                 temp_l.append((p[0] + 1, p[1]))
-#
-#         polygons_list.append(tuple(temp_l))
-#         iterator += 0.5
-#
-#     if vizualize:
-#         visualize_polygons(polygons_list)
-#         return 'success'
-#     else:
-#         return polygons_list
-
-
 def gen_rectangle(limit=50, side_lengths=(1, 1, 1, 1), visualize=True):
     """
     Генерация последовательности четырехугольников.
@@ -458,7 +431,7 @@ def flt_point_inside(point, polygon):
         for i in range(len(polygon)):
             j = (i + 1) % len(polygon)
             # Находится ли точка между вершинами по вертикали
-            # И правее ли находится точка на ребре с той-же y-координатой (формула линейной интерполяции)
+            # И правее ли находится другая точка на ребре с той-же y-координатой (формула линейной интерполяции)
             if ((polygon[i][1] > point[1]) != (polygon[j][1] > point[1])) and \
                     (point[0] < (polygon[j][0] - polygon[i][0]) * (point[1] - polygon[i][1]) / (
                             polygon[j][1] - polygon[i][1]) + polygon[i][0]):
@@ -466,3 +439,68 @@ def flt_point_inside(point, polygon):
         return intersections_count % 2 == 1
 
     return flt_convex_polygon(polygon) and point_in_polygon()
+
+
+def calculate_angle(p1, p2, p3):
+    """
+    Вычисляет угол между тремя точками, где p2 это вершина угла
+
+    Аргументы:
+    p1, p2, p3: Точки в виде кортежей координат (x, y)
+
+    Возвращает:
+    Угол в радианах
+    """
+    # Вычисляем расстояние между вершинами по теореме Пифагора
+    a = math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
+    b = math.sqrt((p2[0] - p3[0]) ** 2 + (p2[1] - p3[1]) ** 2)
+    c = math.sqrt((p3[0] - p1[0]) ** 2 + (p3[1] - p1[1]) ** 2)
+    # Переворачиваем теорему косинусов(a^2 + b^2 - 2*a*b*cos(x)) и находим arccos угла
+    angle = math.acos((a ** 2 + b ** 2 - c ** 2) / (2 * a * b))
+    return angle
+
+
+def get_polygon_angles(polygon):
+    """
+    Вычисляет углы многоугольника.
+
+    Аргументы:
+    polygon: Многоугольник, в виде списка вершин.
+
+    Возвращает:
+    Список углов в радианах.
+    """
+    angles = []
+    n = len(polygon)
+    for i in range(n):
+        p1 = polygon[i]
+        p2 = polygon[(i + 1) % n]
+        p3 = polygon[(i + 2) % n]
+        angle = calculate_angle(p1, p2, p3)
+        angles.append(angle)
+    return angles
+
+
+def flt_polygon_angles_inside(polygon1, polygon2):
+    """
+    Проверяет, является ли второй многоугольник выпуклым и имеет ли общий угол с первым многоугольником
+
+    Аргументы:
+    polygon1: Первый многоугольни
+    polygon2: Второй многоугольник
+
+    Возвращает:
+    True, если второй многоугольник выпуклый и имеет хотя бы один общий угол с первым многоугольником, или False
+    """
+    if not flt_convex_polygon(polygon2):
+        return False
+
+    angles1 = get_polygon_angles(polygon1)
+    angles2 = get_polygon_angles(polygon2)
+
+    for angle1 in angles1:
+        for angle2 in angles2:
+            if math.isclose(angle1, angle2, rel_tol=1e-5):
+                return True
+
+    return False

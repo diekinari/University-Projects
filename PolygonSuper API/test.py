@@ -176,3 +176,65 @@ def sym(element, axis):
 # filtered = list(filter(lambda polygon: flt_point_inside(point, polygon), polygons))
 # visualize_polygons(polygons)
 # visualize_polygons(filtered)
+
+# 5.6 "выпуклый многоугольник имеет один совпадающий угол с заданным полигоном"
+# polygons = [
+#     [(5, 0), (10, 0), (7.5, 5)],  # треугольник – выпуклый – не 90 градусов – не подходит
+#     [(0, 0), (3, 0), (3, 3), (0, 3), (1, 1)],  # прямоугольник – выпуклый – 90 градусов – подходит
+#     [(5, 0), (5, 2), (8, 2), (8, 0)],  # невыпуклый многоугольник – не подходит
+#
+# ]
+# test_polygon = [(-1, 0), (-5, 0), (-5, 5), (-1, 5)]
+# visualize_polygons(polygons)
+# filtered = list(filter(lambda polygon: flt_polygon_angles_inside(test_polygon, polygon), polygons))
+# visualize_polygons(filtered)
+
+# task 6
+
+# 6.1
+# polygons = []
+# first_el = gen_trapezoid(1, side_lengths=(1.5, 1.2, 1.5, 1.2), angles=(120, 120), visualize=False)
+# second_el = gen_trapezoid(1, side_lengths=(2.9, 1.25, 2.9, 1.25), angles=(120, 120), start_x=5, visualize=False)
+# third_el = gen_trapezoid(1, side_lengths=(4.9, 1.8, 4.9, 1.8), angles=(120, 120), start_x=10, visualize=False)
+# fourth_el = gen_trapezoid(1, side_lengths=(6.9, 1.9, 6.9, 1.9), angles=(120, 120), start_x=10, visualize=False)
+#
+# polygons.append(rotate(move(move(rotate(first_el, 90), (2.6, 0))
+#                             + move(rotate(second_el, 90), (4, -5.7))
+#                             + move(rotate(third_el, 90), (6, -11.7))
+#                             + move(rotate(fourth_el, 90), (8.1, -12.7)),
+#                             (-1.2, -0.8)), 45))
+#
+# polygons.append(sym(sym(polygons[0], axis='y'), axis='x'))
+#
+# visualize_polygons(polygons[0] + polygons[1])
+#
+# filtered = list(filter(lambda polygon: flt_square(7, polygon), polygons[1] + polygons[0]))
+# visualize_polygons(filtered)
+
+# 6.2
+# rects = tuple([tr_homothety(polygon, 1.5 * i + 1) for i, polygon in
+#                enumerate(gen_rectangle(limit=5, side_lengths=(1, 1, 1, 1), visualize=False))])
+# tris = move([tr_homothety(polygon, 1.5 * i + 1) for i, polygon in
+#              enumerate(gen_triangle(limit=5, side_length=1, vizualize=False))], (-30, 0))
+# hexs = move(rotate([tr_homothety(polygon, 1.5 * i + 1) for i, polygon in
+#                     enumerate(gen_hexagon(limit=5, side_length=1, vizualize=False))], 45), (-2, -2))
+# # 15 гомотетичных полигонов
+# polygons = rects + tris + hexs
+# visualize_polygons(polygons)
+# # 3 минимальных полигона
+# filtered = list(filter(lambda polygon: flt_shortest_side(2, polygon), polygons))
+# visualize_polygons(filtered)
+
+# 6.3
+rects = tuple([tr_homothety(polygon, 1.5 * i + 1) for i, polygon in
+               enumerate(gen_rectangle(limit=5, side_lengths=(1, 1, 1, 1), visualize=False))])
+tris = rotate([tr_homothety(polygon, 1.5 * i + 1) for i, polygon in
+               enumerate(gen_triangle(limit=5, side_length=1, vizualize=False))], -5)
+hexs = move(rotate([tr_homothety(polygon, 1.3 * i + 1) for i, polygon in
+                    enumerate(gen_hexagon(limit=5, side_length=1, vizualize=False))], 5), (-2, -2))
+polygons = rects + tris + hexs
+filtered = []
+
+
+
+# visualize_polygons(polygons)
