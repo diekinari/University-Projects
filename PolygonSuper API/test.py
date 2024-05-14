@@ -108,8 +108,6 @@ def sym(element, axis):
     return tuple(map(lambda polygon: tr_symmetry(polygon, axis), tuple(element)))
 
 
-#
-#
 # polygons = []
 # first_el = gen_trapezoid(1, side_lengths=(1.5, 1.2, 1.5, 1.2), angles=(120, 120), visualize=False)
 # second_el = gen_trapezoid(1, side_lengths=(2.9, 1.25, 2.9, 1.25), angles=(120, 120), start_x=5, visualize=False)
@@ -226,15 +224,17 @@ def sym(element, axis):
 # visualize_polygons(filtered)
 
 # 6.3
-rects = tuple([tr_homothety(polygon, 1.5 * i + 1) for i, polygon in
-               enumerate(gen_rectangle(limit=5, side_lengths=(1, 1, 1, 1), visualize=False))])
-tris = rotate([tr_homothety(polygon, 1.5 * i + 1) for i, polygon in
-               enumerate(gen_triangle(limit=5, side_length=1, vizualize=False))], -5)
-hexs = move(rotate([tr_homothety(polygon, 1.3 * i + 1) for i, polygon in
-                    enumerate(gen_hexagon(limit=5, side_length=1, vizualize=False))], 5), (-2, -2))
-polygons = rects + tris + hexs
-filtered = []
-
-
-
+# rects = tuple([tr_homothety(polygon, 1.5 * i + 1) for i, polygon in
+#                enumerate(gen_rectangle(limit=5, side_lengths=(1, 1, 1, 1), visualize=False))])
+# tris = rotate([tr_homothety(polygon, 1.5 * i + 1) for i, polygon in
+#                enumerate(gen_triangle(limit=5, side_length=1, vizualize=False))], -5)
+# hexs = move(rotate([tr_homothety(polygon, 1.3 * i + 1) for i, polygon in
+#                     enumerate(gen_hexagon(limit=5, side_length=1, vizualize=False))], 5), (-2, -2))
+# polygons = rects + tris + hexs
+# filtered = flt_polygon_intersection(polygons)
 # visualize_polygons(polygons)
+# visualize_polygons(filtered)
+
+# task 7
+# rects = gen_rectangle(10, (1, 1, 1, 1), visualize=False)
+# visualize_polygons(rects)

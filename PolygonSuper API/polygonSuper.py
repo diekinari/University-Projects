@@ -1,7 +1,5 @@
 import itertools
-import functools
 import random
-from tkinter import Tk
 import matplotlib.pyplot as plt
 import math
 from matplotlib.patches import Polygon
@@ -37,6 +35,146 @@ def visualize_polygons(polygons_iterator):
     plt.show()
 
 
+def tr_translate(polygon, vector=(0, 5)):
+    """
+    Параллельный перенос (параллельный сдвиг) последовательности полигонов.
+
+    Аргументы:
+    polygon: Полигон, представленный в виде кортежа вершин.
+    vector: Вектор сдвига, представленный в виде кортежа (dx, dy), где dx - смещение по оси X, а dy - смещение по оси Y.
+
+    Возвращает:
+    Новый полигон, в которой каждая вершина сдвинута на вектор сдвига.
+    """
+    translated_polygon = []
+    for point in polygon:
+        translated_point = (point[0] + vector[0], point[1] + vector[1])
+        translated_polygon.append(translated_point)
+
+    return tuple(translated_polygon)
+
+
+def tr_translate_decorator(vector):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            polygons = func(*args, **kwargs)
+            return tuple(map(lambda polygon: tr_translate(polygon, vector), polygons))
+
+        return wrapper
+
+    return decorator
+
+
+def tr_rotate(polygon, angle=45):
+    """
+    Поворот полигона на заданный угол
+
+    Аргументы:
+    polygon: Полигон, представленный в виде кортежа вершин
+    angle: Угол поворота в грудсах
+
+    Возвращает:
+    Новый полигон, в котором каждая вершина повернута на заданный угол
+    """
+    rotated_polygon = []
+    for point in polygon:
+        x = point[0]
+        y = point[1]
+        angle_radians = math.radians(angle)
+        # Поворот вершины на заданный угол
+        new_x = x * math.cos(angle_radians) - y * math.sin(angle_radians)
+        new_y = x * math.sin(angle_radians) + y * math.cos(angle_radians)
+        rotated_point = (new_x, new_y)
+        rotated_polygon.append(rotated_point)
+
+    return tuple(rotated_polygon)
+
+
+def tr_rotate_decorator(angle):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            polygons = func(*args, **kwargs)
+            return tuple(map(lambda polygon: tr_rotate(polygon, angle), polygons))
+
+        return wrapper
+
+    return decorator
+
+
+def tr_symmetry(polygon, axis='x'):
+    """
+    Отражение полигона относительно выбранной оси
+
+    Аргументы:
+    polygon: Полигон, представленный в виде кортежа вершин
+    axis: Ось симметрии. Может принимать значения 'x' или 'y'
+
+    Возвращает:
+    Новый полигон, полученный после отражения исходного относительно выбранной оси
+    """
+    symmetrical_polygon = []
+    for point in polygon:
+        x = point[0]
+        y = point[1]
+        # Отражение вершины относительно выбранной оси
+        if axis == 'y':
+            symmetrical_point = (-x, y)
+        elif axis == 'x':
+            symmetrical_point = (x, -y)
+        else:
+            raise ValueError("Неверное значение оси. Ось должна быть 'x' или 'y'.")
+        symmetrical_polygon.append(symmetrical_point)
+
+    return tuple(symmetrical_polygon)
+
+
+def tr_symmetry_decorator(axis):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            polygons = func(*args, **kwargs)
+            return tuple(map(lambda polygon: tr_symmetry(polygon, axis), polygons))
+
+        return wrapper
+
+    return decorator
+
+
+def tr_homothety(polygon, scale_factor=5):
+    """
+    Гомотетия полигона относительно начала координат
+
+    Аргументы:
+    polygon: Полигон, представленный в виде кортежа вершин
+    scale_factor: Коэффициент масштабирования
+
+    Возвращает:
+    Новый полигон, полученный после гомотетии исходного относительно начала координат
+    """
+    homothetic_polygon = []
+    for point in polygon:
+        x = point[0] * scale_factor
+        y = point[1] * scale_factor
+        homothetic_point = (x, y)
+        homothetic_polygon.append(homothetic_point)
+
+    return tuple(homothetic_polygon)
+
+
+def tr_homothety_decorator(scale_factor):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            polygons = func(*args, **kwargs)
+            return tuple(map(lambda polygon: tr_homothety(polygon, scale_factor), polygons))
+
+        return wrapper
+
+    return decorator
+
+
+# @tr_translate_decorator((2, 2))
+# @tr_rotate_decorator(45)
+# @tr_symmetry_decorator('y')
+# @tr_homothety_decorator(2)
 def gen_rectangle(limit=50, side_lengths=(1, 1, 1, 1), visualize=True):
     """
     Генерация последовательности четырехугольников.
@@ -182,7 +320,7 @@ def generate_random_figures():
         figure_type = random.choice(["rectangle", "triangle", "hexagon"])
 
         if figure_type == "rectangle":
-            figure = gen_rectangle(limit=1, vizualize=False)
+            figure = gen_rectangle(limit=1, visualize=False)
         elif figure_type == "triangle":
             figure = gen_triangle(limit=1, vizualize=False)
         else:
@@ -201,98 +339,6 @@ def generate_random_figures():
         base_x += distance_between_figures
 
     visualize_polygons(figures)
-
-
-def tr_translate(polygon, vector=(0, 5)):
-    """
-    Параллельный перенос (параллельный сдвиг) последовательности полигонов.
-
-    Аргументы:
-    polygon: Полигон, представленный в виде кортежа вершин.
-    vector: Вектор сдвига, представленный в виде кортежа (dx, dy), где dx - смещение по оси X, а dy - смещение по оси Y.
-
-    Возвращает:
-    Новый полигон, в которой каждая вершина сдвинута на вектор сдвига.
-    """
-    translated_polygon = []
-    for point in polygon:
-        translated_point = (point[0] + vector[0], point[1] + vector[1])
-        translated_polygon.append(translated_point)
-
-    return tuple(translated_polygon)
-
-
-def tr_rotate(polygon, angle=45):
-    """
-    Поворот полигона на заданный угол
-
-    Аргументы:
-    polygon: Полигон, представленный в виде кортежа вершин
-    angle: Угол поворота в грудсах
-
-    Возвращает:
-    Новый полигон, в котором каждая вершина повернута на заданный угол
-    """
-    rotated_polygon = []
-    for point in polygon:
-        x = point[0]
-        y = point[1]
-        angle_radians = math.radians(angle)
-        # Поворот вершины на заданный угол
-        new_x = x * math.cos(angle_radians) - y * math.sin(angle_radians)
-        new_y = x * math.sin(angle_radians) + y * math.cos(angle_radians)
-        rotated_point = (new_x, new_y)
-        rotated_polygon.append(rotated_point)
-
-    return tuple(rotated_polygon)
-
-
-def tr_symmetry(polygon, axis='x'):
-    """
-    Отражение полигона относительно выбранной оси
-
-    Аргументы:
-    polygon: Полигон, представленный в виде кортежа вершин
-    axis: Ось симметрии. Может принимать значения 'x' или 'y'
-
-    Возвращает:
-    Новый полигон, полученный после отражения исходного относительно выбранной оси
-    """
-    symmetrical_polygon = []
-    for point in polygon:
-        x = point[0]
-        y = point[1]
-        # Отражение вершины относительно выбранной оси
-        if axis == 'y':
-            symmetrical_point = (-x, y)
-        elif axis == 'x':
-            symmetrical_point = (x, -y)
-        else:
-            raise ValueError("Неверное значение оси. Ось должна быть 'x' или 'y'.")
-        symmetrical_polygon.append(symmetrical_point)
-
-    return tuple(symmetrical_polygon)
-
-
-def tr_homothety(polygon, scale_factor=5):
-    """
-    Гомотетия полигона относительно начала координат
-
-    Аргументы:
-    polygon: Полигон, представленный в виде кортежа вершин
-    scale_factor: Коэффициент масштабирования
-
-    Возвращает:
-    Новый полигон, полученный после гомотетии исходного относительно начала координат
-    """
-    homothetic_polygon = []
-    for point in polygon:
-        x = point[0] * scale_factor
-        y = point[1] * scale_factor
-        homothetic_point = (x, y)
-        homothetic_polygon.append(homothetic_point)
-
-    return tuple(homothetic_polygon)
 
 
 def flt_convex_polygon(polygon):
@@ -504,3 +550,73 @@ def flt_polygon_angles_inside(polygon1, polygon2):
                 return True
 
     return False
+
+
+def these_polygons_intersect(polygon1, polygon2):
+    """
+    Проверяет пересечение двух полигонов
+
+    Аргументы:
+    polygon1: Полигон, в виде списка вершин
+    polygon2: Полигон, в виде списка вершин
+
+    Возвращает:
+    True, если полигоны пересекаются, иначе False
+    """
+
+    def edge_intersects(edge1, edge2):
+        """
+        Проверяет, пересекаются ли две ребра.
+
+        Аргументы:
+        edge1: Ребро в виде кортежа двух вершин
+        edge2: Ребро представленное в виде кортежа двух вершин
+
+        Возвращает:
+        True, если ребра пересекаются, иначе False
+        """
+        # распределение вершин
+        x1, y1 = edge1[0]
+        x2, y2 = edge1[1]
+        x3, y3 = edge2[0]
+        x4, y4 = edge2[1]
+
+        # определение направления векторного произведения двух векторов
+        def cross_product(x1, y1, x2, y2):
+            return x1 * y2 - x2 * y1
+
+        # векторное произведение векторов, образованных точками (x1, y1), (x3, y3) и точками (x1, y1), (x4, y4)
+        # AC и AD
+        d1 = cross_product(x3 - x1, y3 - y1, x4 - x1, y4 - y1)
+        # (x2, y2) (x3, y3) и (x2, y2) (x4, y4) -> BC и BD
+        d2 = cross_product(x3 - x2, y3 - y2, x4 - x2, y4 - y2)
+        # (x3, y3) (x1, y1) и (x3, y3) (x2, y2) -> CA и CB
+        d3 = cross_product(x1 - x3, y1 - y3, x2 - x3, y2 - y3)
+        # (x4, y4) (x1, y1) и (x4, y4) (x2, y2) -> DA и DB
+        d4 = cross_product(x1 - x4, y1 - y4, x2 - x4, y2 - y4)
+
+        # если разный знак, то отрезки пересекаются(свойство направления векторного произведения)
+        return d1 * d2 < 0 and d3 * d4 < 0
+
+    for i in range(len(polygon1)):
+        for j in range(len(polygon2)):
+            # ((первая вершина первого полигона), (вторая вершина первого полигона)) -> первая грань первого полигона
+            e1 = (polygon1[i], polygon1[(i + 1) % len(polygon1)])
+            e2 = (polygon2[j], polygon2[(j + 1) % len(polygon2)])
+            if edge_intersects(e1, e2):
+                return True
+
+    return False
+
+
+def flt_polygon_intersection(polygons):
+    non_intersecting_polygons = []
+    for i, polygon1 in enumerate(polygons):
+        intersection_found = False
+        for j, polygon2 in enumerate(polygons):
+            if i != j and these_polygons_intersect(polygon1, polygon2):
+                intersection_found = True
+                break
+        if not intersection_found:
+            non_intersecting_polygons.append(polygon1)
+    return tuple(non_intersecting_polygons)
