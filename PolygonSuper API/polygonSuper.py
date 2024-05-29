@@ -313,8 +313,8 @@ def distance(point1, point2):
 def generate_random_figures():
     figures = []
     total_figures = 7
-    base_x = 0  # Начальное значение X для первой фигуры
-    distance_between_figures = 3  # Расстояние между фигурами в ряду
+    base_x = 0  # начальное значение X для первой фигуры
+    distance_between_figures = 3  # расстояние между фигурами в ряду
 
     while len(figures) < total_figures:
         figure_type = random.choice(["rectangle", "triangle", "hexagon"])

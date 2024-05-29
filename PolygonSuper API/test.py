@@ -8,7 +8,7 @@ from polygonSuper import *
 
 
 # task 2
-# gen_r(limit=100)
+# gen_rectangle(limit=100)
 # gen_triangle(100)
 # gen_hexagon(100, 0.5)
 # generate_random_figures()
@@ -18,7 +18,7 @@ from polygonSuper import *
 # polygons = gen_hexagon(5, vizualize=False, side_length=1)
 # print(polygons)
 
-# -- usage example 1 (use 'lambda polygon: func(polygon, arg)' in case of requiring a specific output) --
+# -- usage example 1 (use 'lambda polygon: func(polygon, arg)' in case of need in a specific output) --
 # $ polygon translation
 # polygons = map(tr_translate, polygons)
 
