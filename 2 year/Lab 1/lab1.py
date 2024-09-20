@@ -11,12 +11,37 @@ dot = c.create_oval(100, 250, 110, 260, fill='red')
 center_x, center_y = 300, 300
 radius = 200
 angle = 0
+speed = 0.01
+
+clicks = 0
+directionRight = True
+
+
+def change_direction():
+    global directionRight
+    directionRight = not directionRight
+
+
+def increase_speed():
+    global speed
+    speed += 0.09
+
+
+def decrease_speed():
+    global speed
+    if speed - 0.09 < 0:
+        if speed - 0.01 >= 0:
+            speed -= 0.01
+            return
+        else:
+            return
+    speed -= 0.09
 
 
 def motion():
     global angle
-    speed = 0.01
-    directionRight = True
+
+    # directionRight = True
     x = center_x + radius * math.cos(angle)
     y = center_y + radius * math.sin(angle)
     c.coords(dot, x - 5, y - 5, x + 5, y + 5)
@@ -25,9 +50,15 @@ def motion():
         angle += speed
     else:
         angle -= speed
-
+    # print(speed)
     root.after(10, motion)
 
 
+directionButton = Button(text="Direction", command=change_direction)
+increaseButton = Button(text="Increase Speed", command=increase_speed)
+decreaseButton = Button(text="Decrease Speed", command=decrease_speed)
+directionButton.pack()
+increaseButton.pack()
+decreaseButton.pack()
 motion()
 root.mainloop()
