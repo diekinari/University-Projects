@@ -12,8 +12,6 @@ center_x, center_y = 300, 300
 radius = 200
 angle = 0
 speed = 0.01
-
-clicks = 0
 directionRight = True
 
 
