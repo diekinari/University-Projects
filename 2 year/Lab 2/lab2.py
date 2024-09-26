@@ -31,18 +31,19 @@ class PiApproximation:
 
         self.canvas.create_line(0, piLineY, windowWidth, piLineY, fill="white", width=2)
 
-        # Start the animation
         self.animate()
 
     def animate(self):
-        if self.step < 300:
+        if self.step < 10000:
             self.leibniz_approx += leibniz_series_step(self.step)
             self.approximation_values.append(self.leibniz_approx)
+
+            difference = abs(math.pi - self.leibniz_approx)
 
             if len(self.approximation_values) > maxPoints:
                 self.approximation_values.pop(0)
 
-            self.pi_label.config(text=f"{self.leibniz_approx:.10f}")
+            self.pi_label.config(text=f"Текущее приближение: {self.leibniz_approx:.10f}, Разница: {difference:.10f}")
 
             self.canvas.delete("approximation")
 

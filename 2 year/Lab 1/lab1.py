@@ -6,7 +6,7 @@ c = Canvas(root, width=600, height=600, bg="gray")
 c.pack()
 
 ball = c.create_oval(100, 100, 500, 500, fill='lightblue')
-dot = c.create_oval(100, 250, 110, 260, fill='red')
+dot = c.create_oval(100, 250, 110, 260, fill='pink')
 
 centralX, centralY = 300, 300
 radius = 200
