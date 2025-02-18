@@ -1,7 +1,9 @@
 # main.py
 import sys
+import os
 from file_manager import FileManager
 from config import load_config
+from user_manager import login_user, register_user
 from colorama import init, Fore, Style
 
 # Инициализация colorama для корректного вывода ANSI-последовательностей (особенно на Windows)
@@ -28,17 +30,49 @@ def print_help():
     print(Fore.CYAN + "  exit                           - выйти из файлового менеджера")
 
 
+def user_auth(base_directory):
+    print(Fore.MAGENTA + "Добро пожаловать в многопользовательский файловый менеджер!")
+    print(Fore.MAGENTA + "Выберите действие:")
+    print(Fore.MAGENTA + "  1. Войти")
+    print(Fore.MAGENTA + "  2. Зарегистрироваться")
+    choice = input("Введите 1 или 2: ").strip()
+    if choice == "1":
+        username = login_user(base_directory)
+    elif choice == "2":
+        username = register_user(base_directory)
+    else:
+        print(Fore.RED + "Неверный выбор.")
+        return None
+    return username
+
+
 def main():
-    working_directory = load_config()
-    fm = FileManager(working_directory)
-    print(Fore.LIGHTGREEN_EX + "Добро пожаловать в файловый менеджер на Python!")
-    print(Fore.LIGHTGREEN_EX + "Рабочая директория: " + fm.get_current_directory())
+    # Загружаем базовую рабочую директорию из конфигурации
+    base_directory = load_config()
+
+    # Получаем имя пользователя через систему авторизации
+    username = None
+    while username is None:
+        username = user_auth(base_directory)
+
+    # Персональная директория пользователя будет находиться в base_directory/users/<username>
+    user_dir = os.path.join(base_directory, "users", username)
+    print(Fore.GREEN + f"Рабочая директория пользователя: {user_dir}")
+
+    # Создаем экземпляр файлового менеджера с персональной директорией пользователя
+    fm = FileManager(user_dir)
+
+    print(Fore.GREEN + "Добро пожаловать в файловый менеджер на Python!")
     print("Введите 'help' для просмотра доступных команд.")
 
     while True:
         try:
+            # Вычисляем относительный путь для приглашения
+            rel_path = os.path.relpath(fm.get_current_directory(), fm.working_directory)
+            prompt_path = "~ " if rel_path == "." else "~/" + rel_path
+
             # Вывод приглашения (prompt) окрашен зелёным
-            command_input = input(Fore.LIGHTGREEN_EX + f"{fm.get_current_directory()}> " + Style.RESET_ALL).strip()
+            command_input = input(Fore.LIGHTGREEN_EX + f"{prompt_path}> " + Style.RESET_ALL).strip()
             if not command_input:
                 continue
 
