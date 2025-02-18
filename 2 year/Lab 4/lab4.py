@@ -45,8 +45,6 @@ class Cell:
                 self.button.config(text="")
 
 
-
-
 class MinesweeperGame(tk.Frame):
     def __init__(self, master, rows=10, columns=10, mines=10):
         super().__init__(master)
