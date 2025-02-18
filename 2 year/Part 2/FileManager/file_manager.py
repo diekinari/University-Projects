@@ -1,17 +1,16 @@
 # file_manager.py
 import os
 import shutil
+import stat
+import zipfile
 
 class FileManager:
     def __init__(self, working_directory):
-        # Рабочая директория задается один раз, и все операции ограничены этим пространством
         self.working_directory = os.path.abspath(working_directory)
         self.current_directory = self.working_directory
 
     def _get_absolute_path(self, path):
-        # Формирует абсолютный путь относительно текущей директории
         abs_path = os.path.abspath(os.path.join(self.current_directory, path))
-        # Проверяем, что абсолютный путь начинается с пути рабочей директории
         if not abs_path.startswith(self.working_directory):
             raise Exception("Access denied: попытка доступа за пределы рабочей директории.")
         return abs_path
@@ -33,8 +32,7 @@ class FileManager:
 
     def remove_directory(self, dirname):
         path = self._get_absolute_path(dirname)
-        # Для удаления используем os.rmdir (удаляет только пустые директории)
-        os.rmdir(path)
+        os.rmdir(path)  # Удаляет только пустые директории
         return path
 
     def create_file(self, filename, content=""):
@@ -56,6 +54,7 @@ class FileManager:
 
     def delete_file(self, filename):
         path = self._get_absolute_path(filename)
+        os.chmod(path, stat.S_IWRITE)  # Снимаем защиту "только для чтения"
         os.remove(path)
         return path
 
@@ -74,7 +73,6 @@ class FileManager:
     def rename_file(self, source, new_name):
         source_path = self._get_absolute_path(source)
         destination_path = os.path.join(os.path.dirname(source_path), new_name)
-        # Проверяем, что новый путь остается внутри рабочей директории
         if not destination_path.startswith(self.working_directory):
             raise Exception("Access denied: нельзя переименовать файл за пределами рабочей директории.")
         os.rename(source_path, destination_path)
@@ -82,3 +80,43 @@ class FileManager:
 
     def get_current_directory(self):
         return self.current_directory
+
+    # Дополнительные функции
+
+    def archive_file(self, source, archive_name):
+        """
+        Архивирует указанный файл или директорию в zip-архив.
+        source - имя файла или директории (относительно current_directory)
+        archive_name - имя создаваемого архива (например, archive.zip)
+        """
+        source_path = self._get_absolute_path(source)
+        archive_path = self._get_absolute_path(archive_name)
+        with zipfile.ZipFile(archive_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+            if os.path.isdir(source_path):
+                for root, dirs, files in os.walk(source_path):
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        zf.write(file_path, os.path.relpath(file_path, os.path.dirname(source_path)))
+            else:
+                zf.write(source_path, os.path.basename(source_path))
+        return archive_path
+
+    def unarchive_file(self, archive_name, destination):
+        """
+        Разархивирует zip-архив в указанную директорию.
+        archive_name - имя zip-архива (относительно current_directory)
+        destination - директория для извлечения архива
+        """
+        archive_path = self._get_absolute_path(archive_name)
+        dest_path = self._get_absolute_path(destination)
+        with zipfile.ZipFile(archive_path, 'r') as zf:
+            zf.extractall(dest_path)
+        return dest_path
+
+    def get_disk_quota(self):
+        """
+        Возвращает общее, использованное и свободное пространство в байтах
+        для раздела, на котором находится рабочая директория.
+        """
+        total, used, free = shutil.disk_usage(self.working_directory)
+        return total, used, free

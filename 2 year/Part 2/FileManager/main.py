@@ -4,8 +4,9 @@ from file_manager import FileManager
 from config import load_config
 from colorama import init, Fore, Style
 
-# Инициализация colorama (на Windows это нужно для корректного вывода ANSI последовательностей)
+# Инициализация colorama для корректного вывода ANSI-последовательностей (особенно на Windows)
 init(autoreset=True)
+
 
 def print_help():
     print(Fore.CYAN + "Доступные команды:")
@@ -20,8 +21,12 @@ def print_help():
     print(Fore.CYAN + "  copy <source> <destination>    - скопировать файл")
     print(Fore.CYAN + "  move <source> <destination>    - переместить файл")
     print(Fore.CYAN + "  rename <source> <new_name>     - переименовать файл")
+    print(Fore.CYAN + "  archive <source> <archive>     - архивировать файл/директорию в zip-архив")
+    print(Fore.CYAN + "  unarchive <archive> <dest>     - разархивировать zip-архив в указанную директорию")
+    print(Fore.CYAN + "  quota                          - показать информацию о дисковом пространстве")
     print(Fore.CYAN + "  help                           - показать справку")
     print(Fore.CYAN + "  exit                           - выйти из файлового менеджера")
+
 
 def main():
     working_directory = load_config()
@@ -32,7 +37,7 @@ def main():
 
     while True:
         try:
-            # Красим приглашение в зелёный цвет
+            # Вывод приглашения (prompt) окрашен зелёным
             command_input = input(Fore.LIGHTGREEN_EX + f"{fm.get_current_directory()}> " + Style.RESET_ALL).strip()
             if not command_input:
                 continue
@@ -108,6 +113,22 @@ def main():
                 else:
                     fm.rename_file(args[0], args[1])
                     print(Fore.LIGHTGREEN_EX + "Файл переименован.")
+            elif cmd == "archive":
+                if len(args) != 2:
+                    print(Fore.RED + "Использование: archive <источник> <архив>")
+                else:
+                    fm.archive_file(args[0], args[1])
+                    print(Fore.LIGHTGREEN_EX + "Архив создан.")
+            elif cmd == "unarchive":
+                if len(args) != 2:
+                    print(Fore.RED + "Использование: unarchive <архив> <директория>")
+                else:
+                    fm.unarchive_file(args[0], args[1])
+                    print(Fore.LIGHTGREEN_EX + "Архив разархивирован.")
+            elif cmd == "quota":
+                total, used, free = fm.get_disk_quota()
+                print(
+                    Fore.MAGENTA + f"Диск: Всего: {total // (1024 * 1024)}MB, Использовано: {used // (1024 * 1024)}MB, Свободно: {free // (1024 * 1024)}MB")
             elif cmd == "help":
                 print_help()
             elif cmd == "exit":
@@ -117,6 +138,7 @@ def main():
                 print(Fore.RED + "Неизвестная команда. Введите 'help' для просмотра команд.")
         except Exception as e:
             print(Fore.RED + "Ошибка: " + str(e))
+
 
 if __name__ == "__main__":
     main()
