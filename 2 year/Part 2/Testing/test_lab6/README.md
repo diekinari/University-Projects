@@ -19,7 +19,7 @@ pip install -r requirements.txt
 pytest tests/test_yandex_form.py -v
 ```
 
-св ## С генерацией Allure отчетов
+## С генерацией Allure отчетов
 ```bash
 pytest --alluredir=allure-results
 allure serve allure-results
